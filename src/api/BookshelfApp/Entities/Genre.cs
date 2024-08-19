@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BookshelfApp;
+namespace BookshelfApp.Entities;
 
-class Genre
+public class Genre
 {
     // Main Properties
     [Key]

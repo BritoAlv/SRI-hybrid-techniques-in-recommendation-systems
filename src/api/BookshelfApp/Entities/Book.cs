@@ -1,6 +1,6 @@
-namespace BookshelfApp;
+namespace BookshelfApp.Entities;
 
-class Book
+public class Book
 {
     // Main Properties
     public Guid Id { get; set; }

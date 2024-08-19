@@ -1,4 +1,4 @@
-namespace BookshelfApp;
+namespace BookshelfApp.Entities;
 
 public class User
 {
