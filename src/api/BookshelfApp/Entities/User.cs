@@ -1,9 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BookshelfApp.Entities;
 
 public class User
 {
     // Main Properties
-    public Guid Id { get; set; }
+    [Key]
+    public int Id { get; set; }
     public string Name { get; set; } = null!;
     public string Email { get; set; } = null!;
 

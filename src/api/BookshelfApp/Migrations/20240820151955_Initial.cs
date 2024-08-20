@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -15,7 +14,8 @@ namespace BookshelfApp.Migrations
                 name: "Books",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Author = table.Column<string>(type: "TEXT", nullable: false),
                     Language = table.Column<string>(type: "TEXT", nullable: false),
@@ -41,7 +41,8 @@ namespace BookshelfApp.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false)
                 },
@@ -54,7 +55,7 @@ namespace BookshelfApp.Migrations
                 name: "BookGenre",
                 columns: table => new
                 {
-                    BooksId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    BooksId = table.Column<int>(type: "INTEGER", nullable: false),
                     GenresName = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -78,13 +79,14 @@ namespace BookshelfApp.Migrations
                 name: "UserBooks",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     ReadRatio = table.Column<float>(type: "REAL", nullable: false),
                     Rating = table.Column<int>(type: "INTEGER", nullable: true),
                     Comment = table.Column<string>(type: "TEXT", nullable: true),
                     Shared = table.Column<int>(type: "INTEGER", nullable: false),
-                    BookId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    BookId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

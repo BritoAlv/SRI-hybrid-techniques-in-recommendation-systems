@@ -19,8 +19,8 @@ namespace BookshelfApp.Migrations
 
             modelBuilder.Entity("BookGenre", b =>
                 {
-                    b.Property<Guid>("BooksId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("BooksId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("GenresName")
                         .HasColumnType("TEXT");
@@ -34,9 +34,9 @@ namespace BookshelfApp.Migrations
 
             modelBuilder.Entity("BookshelfApp.Entities.Book", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Author")
                         .IsRequired()
@@ -70,9 +70,9 @@ namespace BookshelfApp.Migrations
 
             modelBuilder.Entity("BookshelfApp.Entities.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -92,12 +92,12 @@ namespace BookshelfApp.Migrations
 
             modelBuilder.Entity("BookshelfApp.Entities.UserBook", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("BookId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Comment")
                         .HasColumnType("TEXT");
@@ -111,8 +111,8 @@ namespace BookshelfApp.Migrations
                     b.Property<int>("Shared")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
