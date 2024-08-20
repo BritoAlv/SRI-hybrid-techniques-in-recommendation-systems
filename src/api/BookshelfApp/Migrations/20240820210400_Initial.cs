@@ -19,7 +19,7 @@ namespace BookshelfApp.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Author = table.Column<string>(type: "TEXT", nullable: false),
                     Language = table.Column<string>(type: "TEXT", nullable: false),
-                    Year = table.Column<int>(type: "INTEGER", nullable: false)
+                    Year = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {

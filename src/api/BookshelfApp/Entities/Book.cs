@@ -10,7 +10,7 @@ public class Book
     public string Name { get; set; } = null!;
     public string Author { get; set; } = null!;
     public string Language { get; set; } = null!;
-    public int Year { get; set; }
+    public int? Year { get; set; }
 
     // Relational Properties
     public ICollection<Genre> Genres { get; set; } = null!;

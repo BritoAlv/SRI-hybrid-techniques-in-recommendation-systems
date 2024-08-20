@@ -23,7 +23,7 @@ class Book(Base):
     name = Column(String)
     author = Column(String)
     language = Column(String)
-    year = Column(Integer)
+    year = Column(Integer, nullable=True)
     genres = relationship("BookGenre", back_populates="book")
     userBooks = relationship("UserBook", back_populates='book')
 
