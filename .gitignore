@@ -3,6 +3,8 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+gutenberg_*
+
 .db-shm
 .db-wal
 
