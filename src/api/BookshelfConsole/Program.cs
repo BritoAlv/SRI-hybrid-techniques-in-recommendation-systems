@@ -15,57 +15,8 @@
 
 // var db = new BookshelfContext(options);
 
-// foreach (var ub in db.UserBooks)
-//     Console.WriteLine(ub.Id);
-
-// db.Books.Add(new Book()
-// {
-//     Name = "Quijote",
-//     Author = "Pancho",
-//     Language = "En",
-// });
-
-// db.Books.Add(new Book()
-// {
-//     Name = "Iliada",
-//     Author = "Pancho",
-//     Language = "En",
-// });
-
-// db.Books.Add(new Book()
-// {
-//     Name = "Crimen",
-//     Author = "Pancho",
-//     Language = "En",
-// });
-
-// db.Books.Add(new Book()
-// {
-//     Name = "Paz",
-//     Author = "Pancho",
-//     Language = "En",
-// });
-
-// db.Books.Add(new Book()
-// {
-//     Name = "Galia",
-//     Author = "Pancho",
-//     Language = "En",
-// });
-
-// db.Books.Add(new Book()
-// {
-//     Name = "Sol",
-//     Author = "Pancho",
-//     Language = "En",
-// });
-
-// db.Books.Add(new Book()
-// {
-//     Name = "Mar",
-//     Author = "Pancho",
-//     Language = "En",
-// });
+// foreach(var book in db.Books)
+//     Console.WriteLine($"{book.Name} written by {book.Author}");
 
 // db.SaveChanges();
 
@@ -77,11 +28,22 @@ PythonEngine.Initialize();
 using(Py.GIL())
 {
     dynamic sys = Py.Import("sys");
-    sys.path.append ("/home/javier/Core/Computer Science/Projects/IRS/SRI-hybrid-techniques-in-recommendation-systems/src/api/scripts");
-    var pythonScript = Py.Import("main");
+    // Sensitive Data:
+    sys.path.append ("/home/javier/Core/Computer Science/Projects/IRS/SRI-hybrid-techniques-in-recommendation-systems/src/scripts");
+    var pythonScript = Py.Import("recommender");
+
     dynamic pyUtilityMatrix = pythonScript.InvokeMethod("utility_matrix");
     dynamic pyLshMatrix = pythonScript.InvokeMethod("lsh_matrix", pyUtilityMatrix);
-    pythonScript.InvokeMethod("foo", pyUtilityMatrix);
+    
+
+    while(true)
+    {
+        Console.WriteLine("Enter user id: ");
+        var input = Console.ReadLine();
+        dynamic recommended = pythonScript.InvokeMethod("recommend_books", pyUtilityMatrix, pyLshMatrix, new PyInt(int.Parse(input!)));
+        Console.WriteLine(recommended);
+    }
+
 }
 
 Console.WriteLine("Tra");
