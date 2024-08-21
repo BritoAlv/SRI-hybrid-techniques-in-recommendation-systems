@@ -1,136 +1,154 @@
-from queue import PriorityQueue
+import pickle
 import random
-import uuid
-import pandas as pd
+
+import numpy as np
 from pandas import DataFrame
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, joinedload
-from entities import Book, BookGenre, Genre, User, UserBook
-import numpy as np
+from sqlalchemy.orm import Session
+from surprise import Dataset, KNNWithMeans, Reader, KNNBasic
 
-pd.set_option('future.no_silent_downcasting', True) # Avoid downcasting warnings
+from entities import Book, User, UserBook
 
 # Constants
-ENGINE = create_engine("sqlite:///../../../bookshelf.db", echo=True)
-HYPERPLANES = 10
+ENGINE = create_engine("sqlite:///../../bookshelf.db", echo=True)
+HYPERPLANES = 8
 
-# ** Inner helper functions
-# TODO: Must be implemented
-def overall_rate(user_book : UserBook) -> float:
-    return random.randint(0, 5)
+class Recommender:
+    def __init__(self, data_dir : str) -> None:
+        self.data_dir = data_dir
+        self.trained_algo : KNNWithMeans = self._get_trained_algo()
+        self.utility_matrix = self._get_utility_matrix()
+        self.lsh_dict, self.book_lsh = self._get_lsh()
 
-def hamming_similarity_estimate(hamming_distance : int, total_hyperplanes : int) -> float:
-    if hamming_distance < 0 or hamming_distance > total_hyperplanes:
-        raise ValueError("Hamming distance must be between 0 and total_hyperplanes")
-    return -(2 / total_hyperplanes) * hamming_distance + 1
+    def _get_trained_algo(self):
+        with open(f'{self.data_dir}rating_frame.pkl', 'rb') as file:
+            rating_frame = pickle.load(file)
 
-def estimate_top(utility_matrix : DataFrame, lsh_matrix : DataFrame, user_id : int, non_rated_books : list[Book], rated_books_ids : list[int], total : int = 20) -> PriorityQueue[tuple[float, int]]:
-    pq : PriorityQueue[tuple[float, int]] = PriorityQueue()
+        reader = Reader(rating_scale=(1, 5))
+        dataset = Dataset.load_from_df(rating_frame[['book_id', 'user_id', 'overall_rating']], reader)
 
-    for non_rated_book in non_rated_books:
-        non_rated_book_id = non_rated_book.id
-        non_rated_binary = lsh_matrix.loc[non_rated_book_id].values
+        sim_options = {
+            "name": "cosine",
+            "user_based": False,  # Compute  similarities between items
+        }
 
-        weighted_sum = 0.0
-        similarity_sum = 0.0
+        algo = KNNBasic(sim_options=sim_options)
 
-        for rated_book_id in rated_books_ids:
-            rated_binary = lsh_matrix.loc[rated_book_id].values
-            
-            hamming_distance = np.count_nonzero(rated_binary != non_rated_binary)
-
-            # TODO: Reflect about negative similarities
-            estimated_similarity = hamming_similarity_estimate(hamming_distance, HYPERPLANES)
-
-            user_rating = utility_matrix.loc[rated_book_id, user_id]
-
-            weighted_sum += estimated_similarity * user_rating
-
-            similarity_sum += estimated_similarity
+        trainingSet = dataset.build_full_trainset()
+        algo.fit(trainingSet)
+        
+        return algo
     
-        estimated_rating = weighted_sum / similarity_sum if similarity_sum > 0 else 0.
+    def _get_utility_matrix(self):
+        with open(f'{self.data_dir}utility_matrix.pkl', 'rb') as file:
+            utility_matrix = pickle.load(file)
+        return utility_matrix
 
-        pq.put((estimated_rating, non_rated_book_id))
-        
-        if pq.qsize() > total:
-            pq.get()
-    
-    return pq
+    def _get_lsh(self):
+        lsh_dict : dict[str, list[int]]= {}
+        book_lsh : dict[int, str] = {}
 
+        hyperplanes = HYPERPLANES
+        dimension = self.utility_matrix.shape[1] # Take vector dimensions
 
-## ** .NET interactive functions
-def utility_matrix() -> DataFrame:    
-    with Session(ENGINE) as session:
-        users = session.query(User).all() # Get all users
-        books = session.query(Book).all() # Get all books
-        
-        user_books = session.query(UserBook).all() # Get all user_books
+        plane_norms = np.random.rand(hyperplanes, dimension) - .5
 
-        utility_matrix = DataFrame(index=[book.id for book in books], columns=[user.id for user in users]) # Create utility matrix
+        for index, row in self.utility_matrix.iterrows():
+            row_centered = row - row.mean() # Center the row to zero mean.
+            row_vector = row_centered.values # Take the row vector
 
-        for user_book in user_books:
-            utility_matrix.loc[user_book.bookId, user_book.userId] = overall_rate(user_book) # Populate utility matrix
+            row_dot = np.dot(row_vector, plane_norms.T) # Compute the dot product with each plane.
+            row_dot = (row_dot > 0).astype(int) # Convert the result to binary.
+            hash_str = ''.join(row_dot.astype(str)) # Convert to string
 
-    utility_matrix = utility_matrix.fillna(0)
-    return utility_matrix
-
-def lsh_matrix(utility_matrix : DataFrame) -> DataFrame:
-    hyperplanes = HYPERPLANES
-    dimension = utility_matrix.shape[1] # Take vector dimensions
-
-    lsh_matrix = pd.DataFrame(index=utility_matrix.index, columns=[i for i in range(hyperplanes)], dtype=np.int64)
-
-    plane_norms = np.random.rand(hyperplanes, dimension) - .5
-
-    for index, row in utility_matrix.iterrows():
-        row_centered = row - row.mean() # Center the row to zero mean.
-        row_vector = row_centered.values # Take the row vector
-
-        row_dot = np.dot(row_vector, plane_norms.T) # Compute the dot product with each plane.
-        row_dot = (row_dot > 0).astype(int) # Convert the result to binary.
-
-        lsh_matrix.loc[index] = row_dot # Assign the binary representation to the corresponding row in the LSH matrix.
-
-    return lsh_matrix
-
-def recommend_books(utility_matrix : DataFrame, lsh_matrix : DataFrame, user_id : int, total : int = 20):
-    with Session(ENGINE) as session:
-        rated_user_books = session.query(UserBook).filter(UserBook.userId == user_id).all()
-        rated_books_ids = [user_book.bookId for user_book in rated_user_books]
-
-        non_rated_books = session.query(Book).filter(~Book.id.in_(rated_books_ids)).all()
-
-    estimate_pq = estimate_top(utility_matrix, lsh_matrix, user_id, non_rated_books, rated_books_ids, total)
-    optimal_pq : PriorityQueue[tuple[float, int]] = PriorityQueue()
-
-    while estimate_pq.qsize() > 0:
-        _, non_rated_book_id = estimate_pq.get()
-
-        non_rated_vector = utility_matrix.loc[non_rated_book_id] - utility_matrix.loc[non_rated_book_id].mean()
-        non_rated_vector = non_rated_vector.values
-
-        non_rated_norm = np.linalg.norm(non_rated_vector)
-
-        weighted_sum = .0
-        similarity_sum = .0
-
-        for rated_book_id in rated_books_ids:
-            rated_vector = utility_matrix.loc[rated_book_id] -  utility_matrix.loc[rated_book_id].mean()
-            rated_vector = rated_vector.values
-
-            rated_norm = np.linalg.norm(rated_vector)
-
-            dot_product = np.dot(non_rated_vector, rated_vector)
+            # Save in dictionary
+            if hash_str in lsh_dict:
+                lsh_dict[hash_str].append(index)
+            else:
+                lsh_dict[hash_str] = [index] 
             
-            user_rating = utility_matrix.loc[rated_book_id, user_id]
-            similarity = dot_product / non_rated_norm * rated_norm if non_rated_norm * rated_norm != 0 else 0
-            weighted_sum += user_rating * similarity
-            similarity_sum += similarity
-        
-        estimated_ranking = weighted_sum / similarity_sum if similarity_sum > 0 else 0.
-        optimal_pq.put((estimated_ranking, non_rated_book_id))
+            book_lsh[index] = hash_str
 
-    recommendation = []
-    while(optimal_pq.qsize() > 0):
-        recommendation.append(optimal_pq.get())
-    return recommendation
+        return (lsh_dict, book_lsh)
+    
+    def update_rating_frame(self):
+        with Session(ENGINE) as session:
+            user_books = session.query(UserBook).all() # Get all user_books
+
+            rating_frame = DataFrame(columns=['book_id', 'user_id', 'overall_rating']) # Create utility matrix
+
+            for i, user_book in enumerate(user_books):
+                rating_frame.loc[i] = (user_book.bookId, user_book.userId, self._overall_rate(user_book))
+
+        with open('./data/rating_frame.pkl', 'wb') as file:
+            pickle.dump(rating_frame, file)
+        
+        # Update training algo
+        self.trained_algo = self.get_trained_algo()
+
+    def update_utility_matrix(self) -> DataFrame:    
+        with Session(ENGINE) as session:
+            users = session.query(User).all() # Get all users
+            books = session.query(Book).all() # Get all books
+            
+            user_books = session.query(UserBook).all() # Get all user_books
+
+            utility_matrix = DataFrame(index=[book.id for book in books], columns=[user.id for user in users]) # Create utility matrix
+
+            for user_book in user_books:
+                utility_matrix.loc[user_book.bookId, user_book.userId] = self._overall_rate(user_book) # Populate utility matrix
+
+        utility_matrix = utility_matrix.fillna(0)
+
+        with open(f'{self.data_dir}utility_matrix.pkl', 'wb') as file:
+            pickle.dump(utility_matrix, file)
+        
+        self.utility_matrix = utility_matrix
+        self.lsh_dict, self.book_lsh = self._get_lsh()
+
+    def _get_closest_books(self, user_id : int):
+        with Session(ENGINE) as session:
+            # Select book-ids from user's user_books
+            user_books = session.query(UserBook).filter(UserBook.userId == user_id).all()
+        rated_books = [user_book.bookId for user_book in user_books]
+
+        # Sort by overall rating
+        rated_books = sorted(rated_books, key=lambda x: self.utility_matrix.loc[x, user_id])
+
+        # Take top ten rated_books
+        if len(rated_books) > 10:
+            rated_books = rated_books[0:10]
+
+        target_books : set[int] = set() 
+        for book in rated_books:
+            hash_str = self.book_lsh[book]
+            close_books = self.lsh_dict[hash_str]
+
+            if len(close_books) > 10:
+                close_books = random.choices(close_books, k=10)
+            
+            for close_book in close_books:
+                if close_book not in target_books and close_book not in rated_books:
+                    target_books.add(close_book)
+            
+        return target_books
+    
+    def recommend(self, user_id : int):
+        closest_books = self._get_closest_books(user_id)
+
+        pairs = []
+        for book in closest_books:
+            pairs.append((self.trained_algo.predict(user_id, book).est, book))
+
+        return sorted(pairs, key=lambda x: -x[0])
+    
+    # ** Inner helper functions
+    # TODO: Must be implemented
+    def _overall_rate(user_book : UserBook) -> float:
+        return random.randint(1, 5)
+    
+DATA_DIR = './data/'
+r = Recommender(DATA_DIR)
+
+for i in range(100):
+    print(r.recommend(i))
