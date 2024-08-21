@@ -106,14 +106,18 @@ def recommend_books(utility_matrix : DataFrame, lsh_matrix : DataFrame, user_id 
     while estimate_pq.qsize() > 0:
         _, non_rated_book_id = estimate_pq.get()
 
-        non_rated_vector = utility_matrix.loc[non_rated_book_id].values
+        non_rated_vector = utility_matrix.loc[non_rated_book_id] - utility_matrix.loc[non_rated_book_id].mean()
+        non_rated_vector = non_rated_vector.values
+
         non_rated_norm = np.linalg.norm(non_rated_vector)
 
         weighted_sum = .0
         similarity_sum = .0
 
         for rated_book_id in rated_books_ids:
-            rated_vector = utility_matrix.loc[rated_book_id].values
+            rated_vector = utility_matrix.loc[rated_book_id] -  utility_matrix.loc[rated_book_id].mean()
+            rated_vector = rated_vector.values
+
             rated_norm = np.linalg.norm(rated_vector)
 
             dot_product = np.dot(non_rated_vector, rated_vector)
@@ -130,13 +134,3 @@ def recommend_books(utility_matrix : DataFrame, lsh_matrix : DataFrame, user_id 
     while(optimal_pq.qsize() > 0):
         recommendation.append(optimal_pq.get())
     return recommendation
-
-
-u = utility_matrix()
-l = lsh_matrix(u)
-
-books = recommend_books(u, l, 1)
-print(books)
-
-def foo(u):
-    print(u)
