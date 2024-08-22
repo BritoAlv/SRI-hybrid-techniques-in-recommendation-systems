@@ -1,4 +1,4 @@
-namespace BookshelfApp.Contracts;
+namespace BookshelfApp.Contracts.Requests;
 
 public record LoginRequest(
     string Email
