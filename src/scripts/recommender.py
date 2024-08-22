@@ -10,7 +10,9 @@ from surprise import Dataset, KNNWithMeans, Reader, KNNBasic
 from entities import Book, User, UserBook
 
 # Constants
-ENGINE = create_engine("sqlite:///../../bookshelf.db", echo=True)
+# ENGINE = create_engine("sqlite:///../../bookshelf.db", echo=True) # From file directory
+ENGINE = create_engine("sqlite:///../../../bookshelf.db", echo=True) # From Program.cs directory
+
 HYPERPLANES = 8
 
 class Recommender:
@@ -147,8 +149,8 @@ class Recommender:
     def _overall_rate(user_book : UserBook) -> float:
         return random.randint(1, 5)
     
-DATA_DIR = './data/'
-r = Recommender(DATA_DIR)
+# DATA_DIR = './data/ # From file directory
+DATA_DIR = '../../scripts/data/' # From Program.cs directory 
 
-for i in range(100):
-    print(r.recommend(i))
+def start():
+    return Recommender(DATA_DIR) 

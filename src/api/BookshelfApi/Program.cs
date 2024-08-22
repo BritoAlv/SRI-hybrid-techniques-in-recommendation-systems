@@ -112,4 +112,9 @@ app.MapPost("/bookshelf/rating", (UserBookContract request, BookshelfContext con
     return Results.Ok();
 });
 
+//  Implement recommend method
+app.MapGet("/bookshelf/recommend", (int userId, BookshelfContext context) => {
+    return new Random().Next(1, 10);
+});
+
 app.Run();
