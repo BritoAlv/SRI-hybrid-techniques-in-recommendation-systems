@@ -3,6 +3,7 @@ using System;
 using BookshelfApp.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookshelfApp.Migrations
 {
     [DbContext(typeof(BookshelfContext))]
-    partial class BookshelfContextModelSnapshot : ModelSnapshot
+    [Migration("20240822221239_Add 'features' column in Users")]
+    partial class AddfeaturescolumninUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
