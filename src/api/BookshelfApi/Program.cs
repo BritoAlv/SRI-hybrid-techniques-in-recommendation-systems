@@ -54,7 +54,20 @@ app.MapPost("/bookshelf/login", (LoginRequest request, BookshelfContext context)
     return Results.Ok(new UserResponse(user.Id, user.Email));
 });
 
-// User features endpoint
+// User features get endpoint
+app.MapGet("/bookshelf/features", (BookshelfContext context) => {
+    var genres = context.Genres.Select(g => g.Name).ToList();
+    
+    var response = new FeaturesResponse(
+        genres,
+        [],
+        [TimePeriods.Ancient, TimePeriods.Modern, TimePeriods.Contemporary]
+    );
+
+    return Results.Ok(response);
+});
+
+// User features post endpoint
 app.MapPost("/bookshelf/features", (FeaturesRequest request, BookshelfContext context) => {
     var user = context.Users.FirstOrDefault(u => u.Id == request.UserId);
 
@@ -110,6 +123,13 @@ app.MapPost("/bookshelf/rating", (UserBookContract request, BookshelfContext con
     }
     
     return Results.Ok();
+});
+
+// Search endpoint
+app.MapGet("/bookshelf/search", (string query, BookshelfContext context) => {
+    var books = context.Books.Where(b => b.Name.Contains(query.ToLower())).Select(b => new Tuple<int, string>(b.Id, b.Name)).ToList();
+
+    return Results.Ok(books);
 });
 
 //  Implement recommend method
