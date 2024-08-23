@@ -4,16 +4,27 @@ using BookshelfApp.Contracts.Requests;
 using BookshelfApp.Contracts.Responses;
 using BookshelfApp.DataAccess;
 using BookshelfApp.Entities;
+using BookshelfApp.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using Python.Runtime;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("BookshelfConnection");
+
+// Runtime.PythonDLL = builder.Configuration.GetSection("PythonDLL").Value;
+// PythonEngine.Initialize();
+
+var bookshelfConnection = builder.Configuration.GetConnectionString("BookshelfConnection");
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<BookshelfContext>(options =>
-    options.UseSqlite(connectionString)
+    options.UseSqlite(bookshelfConnection)
 );
+
+builder.Services.Configure<RecommenderSettings>(builder.Configuration.GetSection(nameof(RecommenderSettings)));
+builder.Services.AddSingleton<Recommender>();
 
 var app = builder.Build();
 
@@ -39,7 +50,6 @@ app.MapPost("/bookshelf/register", (RegisterRequest request, BookshelfContext co
 
     return Results.Ok(new UserResponse(user.Id, user.Email));
 });
-
 
 // Login endpoint
 app.MapPost("/bookshelf/login", (LoginRequest request, BookshelfContext context) => {
@@ -133,8 +143,8 @@ app.MapGet("/bookshelf/search", (string query, BookshelfContext context) => {
 });
 
 //  Implement recommend method
-app.MapGet("/bookshelf/recommend", (int userId, BookshelfContext context) => {
-    return new Random().Next(1, 10);
+app.MapGet("/bookshelf/recommend", (int userId, Recommender recommender) => {
+    return Results.Ok(recommender.Recommend(userId));
 });
 
 app.Run();
