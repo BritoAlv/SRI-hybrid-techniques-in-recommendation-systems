@@ -1,0 +1,20 @@
+@host = http://127.0.0.1:5000/bookshelf
+
+POST  {{host}}/register
+Content-Type: application/json
+
+{
+  "name": "John",
+  "email": "doe@mail.com"
+}
+
+
+###
+
+POST  {{host}}/register
+Content-Type: application/json
+
+{
+  "name": "Lucy",
+  "email": "lucy@mail.com"
+}
