@@ -28,7 +28,7 @@ class DataCollector:
         TOTAL_PAGES = 2300
         GUTENDEX_URL = 'https://gutendex.com/books/'
 
-        for i in range(563, TOTAL_PAGES + 1):
+        for i in range(1, TOTAL_PAGES + 1):
             url = f'{GUTENDEX_URL}?page={i}'
             response = requests.get(url)
 
@@ -54,7 +54,7 @@ class DataCollector:
             for genre in genre_data['genres']:
                 session.add(Genre(genre))
 
-            for i in range(1, 101):
+            for i in range(1, 51):
                 file_name = f'{self.directory}/gutendex_{i}.json'
                 with open(file_name, 'r') as file:
                     data = json.load(file)
@@ -105,8 +105,9 @@ class DataCollector:
         top_authors = []
         while authors_pq.qsize() > 0:
             author = authors_pq.get()[1]
-            if author not in top_authors:
-                top_authors.append(author)
+            if author in top_authors:
+                top_authors.remove(author)
+            top_authors.insert(0, author)
 
         top_authors = {
             'authors': top_authors
@@ -116,8 +117,11 @@ class DataCollector:
                 file.write(data)
         
         top_books = []
-        for _, book in books_pq.queue:
-            top_books.append(book)
+        while books_pq.qsize() > 0:
+            book = books_pq.get()[1]
+            if book in top_books:
+                top_books.remove(book)
+            top_books.insert(0, book)
 
         top_books = {
             'books': top_books
@@ -131,6 +135,8 @@ class DataCollector:
     def generate_user_books(self):
         ENGINE = create_engine(self.connection_string, echo=True)
         fake = Faker()
+        users = [0, 0]
+
         with Session(ENGINE) as session:
             genres = session.query(Genre).all()
 
@@ -142,7 +148,10 @@ class DataCollector:
                 top_books = json.load(file)
             top_books = top_books['books']
 
-            for i in range(500):
+            # Take only 300 from top_authors
+            top_authors = top_authors[:100]
+
+            for i in range(1, 100):
                 user = User()
                 user.id = i
                 user.name = fake.name()
@@ -168,17 +177,20 @@ class DataCollector:
                             match_genre = True
                             break
                     
-                    if book.author in k_authors and match_genre and book.year != None and self._get_time_period(book.year) == time_period:
+                    if book.author in k_authors or match_genre or (book.year != None and self._get_time_period(book.year) == time_period):
+                        users[0] += 1
                         user_book = self._positive_user_book(i, book_id)
                         session.add(user_book)
-                    elif book.author in k_authors or match_genre or (book.year != None and self._get_time_period(book.year) == time_period):
-                        user_book = self._neutral_user_book(i, book_id)
-                        session.add(user_book)
                     else:
+                        users[1] += 1
                         user_book = self._negative_user_book(i, book_id)
                         session.add(user_book)
 
             session.commit()
+        print(f'''
+Positive users: {users[0]},
+Negative users: {users[1]}
+''')
 
     def _find_most_similar(self, input_string : str, string_set : set[str]):
         input_string = input_string.lower()
@@ -246,7 +258,7 @@ class DataCollector:
 
     def _negative_user_book(self, user_id : int, book_id : int):
         shared = random.randint(0, 2)
-        read_ratio = random.randint(2, 30) / 100
+        read_ratio = random.randint(0, 50) / 100
         rating = random.randint(0, 2)
         comment = random.choice([
             "Simply don't like the book",
