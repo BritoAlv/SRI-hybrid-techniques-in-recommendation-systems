@@ -89,6 +89,11 @@ def features_post():
 
     # Update user's features
     with Session(ENGINE) as session:
+        user = session.query(User).filter(User.id == user_id).first()
+        
+        if user == None:
+            return jsonify(Response.error(f"user_id {user_id} is not registered"))
+
         statement = update(User).where(User.id == user_id).values(features=data)
         session.execute(statement)
         session.commit()
@@ -107,6 +112,14 @@ def rating():
     comment = data['comment']
 
     with Session(ENGINE) as session:
+        user = session.query(User).filter(User.id == user_id).first()
+        book = session.query(Book).filter(Book.id == book_id).first()
+
+        if user == None:
+            return jsonify(Response.error(f"user_id {user_id} does not exist"))            
+        if book == None:
+            return jsonify(Response.error(f"book_id {book_id} does not exist"))
+
         user_book = session.query(UserBook).filter(UserBook.userId == user_id and UserBook.bookId == book_id).first()
 
         if user_book == None:

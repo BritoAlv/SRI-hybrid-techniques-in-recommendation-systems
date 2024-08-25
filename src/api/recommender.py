@@ -3,21 +3,20 @@ import random
 
 import numpy as np
 from pandas import DataFrame
-from sqlalchemy import create_engine
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session
 from surprise import Dataset, KNNWithMeans, Reader, KNNBasic
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 from entities import Book, User, UserBook
 
-# Constants
-ENGINE = create_engine("sqlite:///../../bookshelf.db", echo=True) # From file directory
-# ENGINE = create_engine("sqlite:///../../../bookshelf.db", echo=True) # From Program.cs directory
-
 HYPERPLANES = 8
 
 class Recommender:
-    def __init__(self, data_dir : str) -> None:
+    def __init__(self, data_dir : str, engine : Engine) -> None:
+        self.engine = engine 
+        
+        # From file directory
         self.data_dir = data_dir
         self.trained_algo : KNNWithMeans = self._get_trained_algo()
         self.utility_matrix = self._get_utility_matrix()
@@ -75,7 +74,7 @@ class Recommender:
         return (lsh_dict, book_lsh)
     
     def update_rating_frame(self):
-        with Session(ENGINE) as session:
+        with Session(self.engine) as session:
             user_books = session.query(UserBook).all() # Get all user_books
 
             rating_frame = DataFrame(columns=['book_id', 'user_id', 'overall_rating']) # Create utility matrix
@@ -90,7 +89,7 @@ class Recommender:
         self.trained_algo = self.get_trained_algo()
 
     def update_utility_matrix(self) -> DataFrame:    
-        with Session(ENGINE) as session:
+        with Session(self.engine) as session:
             users = session.query(User).all() # Get all users
             books = session.query(Book).all() # Get all books
             
@@ -110,7 +109,7 @@ class Recommender:
         self.lsh_dict, self.book_lsh = self._get_lsh()
 
     def _get_closest_books(self, user_id : int):
-        with Session(ENGINE) as session:
+        with Session(self.engine) as session:
             # Select book-ids from user's user_books
             user_books = session.query(UserBook).filter(UserBook.userId == user_id).all()
         rated_books = [user_book.bookId for user_book in user_books]
@@ -137,11 +136,11 @@ class Recommender:
         return target_books
     
     def recommend(self, user_id : int):
-        closest_books = self._get_closest_books(user_id)
-
         pairs = []
-        for book in closest_books:
-            pairs.append((self.trained_algo.predict(user_id, book).est, book))
+        if user_id in self.utility_matrix.columns:
+            closest_books = self._get_closest_books(user_id)
+            for book in closest_books:
+                pairs.append((self.trained_algo.predict(user_id, book).est, book))
 
         return sorted(pairs, key=lambda x: -x[0])
     
