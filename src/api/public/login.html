@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bookshelf</title>
+    <style>
+        
+    </style>
+
+    <link rel="stylesheet" href="../static/complements/bootstrap/css/bootstrap.min.css">
+    <link href="index.css" rel="stylesheet">
+    <link rel="stylesheet" href="font/bootstrap-icons.css">
+
+
+    <script src="../static/complements/jquery.js"></script>
+    <script src="../static/complements/popper.js"></script>
+    <script src="../static/complements/bootstrap/js/bootstrap.bundle.js"></script>
+
+
+</head>
+<body>
+    
+    <div class="container">
+        <h2>Login</h2>
+        <form action="/login" method="post">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+    </div>
+
+
+</body>
+</html>

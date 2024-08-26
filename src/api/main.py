@@ -20,6 +20,15 @@ RECOMMENDER = Recommender(DATA_DIRECTORY, ENGINE)
 def home():
     return send_file("./public/index.html")
 
+@app.route('/register', methods = ['GET'])
+def register():
+    return send_file("./public/register.html")
+
+@app.route('/login', methods = ['GET'])
+def login():
+    return send_file("./public/login.html")
+
+
 @app.route('/bookshelf/register', methods = ['POST'])
 def register_user():
     data = request.get_json()
