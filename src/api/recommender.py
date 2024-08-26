@@ -23,10 +23,20 @@ class Recommender:
         self.trained_algo : KNNWithMeans = self._get_trained_algo()
         self.utility_matrix = self._get_utility_matrix()
         self.lsh_dict, self.book_lsh = self._get_lsh()
-        self._updating = False
+        self._lock = threading.Lock()
+        self._busy = False
 
         thread = threading.Thread(target=self._update)
         thread.start()
+
+    def _dispose(self):
+        with self._lock:
+            while self._busy:
+                time.sleep(1)
+            self._busy = True
+    
+    def _release(self):
+        self._busy = False
 
     def _update(self):
         while True:
@@ -95,16 +105,13 @@ class Recommender:
             for i, user_book in enumerate(user_books):
                 rating_frame.loc[i] = (user_book.bookId, user_book.userId, self._overall_rate(user_book))
 
-        while self._updating:
-            time.sleep(1)
-
-        self._updating = True
+        self._dispose()
         with open('./data/rating_frame.pkl', 'wb') as file:
             pickle.dump(rating_frame, file)
         
         # Update training algo
         self.trained_algo = self.get_trained_algo()
-        self._updating = False
+        self._release()
 
     def _update_utility_matrix(self) -> DataFrame:    
         with Session(self.engine) as session:
@@ -120,16 +127,13 @@ class Recommender:
 
         utility_matrix = utility_matrix.fillna(0)
 
-        while self._updating:
-            time.sleep(1)
-
-        self._updating = True
+        self._dispose()
         with open(f'{self.data_dir}utility_matrix.pkl', 'wb') as file:
             pickle.dump(utility_matrix, file)
         
         self.utility_matrix = utility_matrix
         self.lsh_dict, self.book_lsh = self._get_lsh()
-        self._updating = False
+        self._release()
 
     def _get_closest_books(self, user_id : int):
         with Session(self.engine) as session:
@@ -159,17 +163,16 @@ class Recommender:
         return target_books
     
     def recommend(self, user_id : int):
-        while self._updating:
-            time.sleep(2)
+        self._dispose()
 
-        self._updating = True
+        self._busy = True
         pairs = []
         if user_id in self.utility_matrix.columns:
             closest_books = self._get_closest_books(user_id)
             for book in closest_books:
                 pairs.append((self.trained_algo.predict(user_id, book).est, book))
 
-        self._updating = False
+        self._release()
         return sorted(pairs, key=lambda x: -x[0])
     
     def _sentiment_analysis(self, text : str):

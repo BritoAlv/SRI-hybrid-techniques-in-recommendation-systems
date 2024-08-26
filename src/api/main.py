@@ -11,7 +11,9 @@ from response import Response
 app = Flask(__name__)
 
 ENGINE = create_engine("sqlite:///../../bookshelf.db", echo=True) # From file directory
-RECOMMENDER = Recommender('./data/')
+DATA_DIRECTORY = './data/'
+RECOMMENDER = Recommender(DATA_DIRECTORY, ENGINE)
+RECOMMENDER = Recommender(DATA_DIRECTORY, ENGINE)
 
 @app.route('/bookshelf/register', methods = ['POST'])
 def register_user():
@@ -63,7 +65,7 @@ def features_get():
         genres = [genre.name for genre in session.query(Genre).all()]
 
     # Retrieve top authors
-    with open('./data/top_authors.json', 'r') as file:
+    with open(f'{DATA_DIRECTORY}top_authors.json', 'r') as file:
         top_authors = json.load(file)
 
     response = Response.features(
