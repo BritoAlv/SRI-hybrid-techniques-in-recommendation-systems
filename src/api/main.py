@@ -1,6 +1,6 @@
 import json
 import random
-from flask import Flask, Response, jsonify, request
+from flask import Flask, Response, jsonify, request, send_file
 from sqlalchemy import create_engine, select, update
 from sqlalchemy.orm import Session
 
@@ -14,6 +14,11 @@ ENGINE = create_engine("sqlite:///../../bookshelf.db", echo=True) # From file di
 DATA_DIRECTORY = './data/'
 RECOMMENDER = Recommender(DATA_DIRECTORY, ENGINE)
 RECOMMENDER = Recommender(DATA_DIRECTORY, ENGINE)
+
+
+@app.route('/', methods = ['GET'])
+def home():
+    return send_file("./public/index.html")
 
 @app.route('/bookshelf/register', methods = ['POST'])
 def register_user():
