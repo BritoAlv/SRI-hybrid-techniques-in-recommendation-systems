@@ -44,9 +44,11 @@ def Kmeans( objects : list[ISimilar] , number_clusters = 40):
 
         clusters = [[] for _ in range(number_clusters)]
         centroids = random.sample(objects, number_clusters)
-        for _ in range(10):
+        for i in range(10):
+            print(f"Start {i+1} iteration of K-Means")
             assign_clusters(clusters, centroids)
             new_centroids = update_centroids(clusters, centroids)
+            print(f"End {i+1} iteration of K-Means")
             if new_centroids == centroids:
                 break
             else:

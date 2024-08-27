@@ -1,10 +1,12 @@
-from entities_repr import User
-from test_books import books
-from test_user import generate_users
-from hybrid_recommender import HybridRecommender
+from itemchm.entities_repr import User
+from itemchm.hybrid_recommender import HybridRecommender
 
-users = generate_users()
-system = HybridRecommender(books, users)
+import pickle as pk
+
+with open("system.pk", "wb") as s:
+    system = pk.load(s)
+
+assert(isinstance(system, HybridRecommender))
 
 selected_user = User(1241241241, "BritoAlv", { 4 : 5})
 

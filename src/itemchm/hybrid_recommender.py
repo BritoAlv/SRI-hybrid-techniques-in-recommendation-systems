@@ -1,6 +1,6 @@
 import numpy as np
-from entities_repr import Book, User
-from kmeans import Kmeans
+from itemchm.entities_repr import Book, User
+from itemchm.kmeans import Kmeans
 
 class HybridRecommender:
     def __init__(self, books: list[Book], users: list[User]):
@@ -20,6 +20,7 @@ class HybridRecommender:
         """
         build item - item matrix
         """
+        print("Start building Item Rating Matrix")
         result = {}
         for book in self.books:
             result[book] = {}
@@ -27,17 +28,21 @@ class HybridRecommender:
                 if book.id in user.ratings:
                     result[book][user] = user.ratings[book.id]
         self.item_rating = result
+        print("End building Item Rating Matrix")
 
     def build_group_rating(self, number_clusters=40):
         """
         build group - item matrix using K - Means
         """
+        print("Start building Group Rating Matrix")
         self.group_rating_by_book = Kmeans(self.books, number_clusters)
+        print("End building Group Rating Matrix")
 
     def build_averages_book(self):
         """
         compute average rating of book
         """
+        print("Start building Averages Book Array")
         averages = {}
         for book in self.books:
             averages[book] = 0
@@ -49,20 +54,24 @@ class HybridRecommender:
             if raters > 0:
                 averages[book] /= raters
         self.averages_book = averages
+        print("End building Averages Book Array")
 
     def build_averages_user(self):
         """
         compute average rating of user.
         """
+        print("Start building Averages User Array")
         averages = {}
         for user in self.users:
             averages[user] = sum(user.ratings.values()) / len(user.ratings)
         self.averages_user = averages
+        print("End building Averages User Array")
 
     def build_item_rating_similitud(self):
         """
         build item - item similitud matrix.
         """
+        print("Start building Item Rating Similitud")
         if self.item_rating is None:
             self.build_item_rating()
         if self.averages_book is None:
@@ -94,11 +103,13 @@ class HybridRecommender:
                 else:
                     result[book][other] = num / (np.sqrt(den1) * np.sqrt(den2))
         self.item_rating_similitud = result
+        print("End building Item Rating Similitud")
 
     def build_group_rating_similitud(self):
         """
         build group - group rating matrix.
         """
+        print("Start building Group Rating Similitud")
         if self.group_rating_by_book is None :
             self.build_group_rating()
         if self.averages_user is None:
@@ -135,11 +146,13 @@ class HybridRecommender:
                     result[book][other] = num / (np.sqrt(den1) * np.sqrt(den2))
 
         self.group_rating_similitud_book = result
+        print("End building Group Rating Similitud")
 
     def build_similitud_matrix(self, linear_coef=0.4):
         """
         combine matrix to produce final matrix.
         """
+        print("Start Mixing Matrix")
         if self.item_rating_similitud is None:
             self.build_item_rating_similitud()
         if self.group_rating_similitud_book is None:
@@ -157,6 +170,11 @@ class HybridRecommender:
                 )
 
         self.similitud_matrix = result
+        print("End Mixing Matrix")
+
+    def compute_data(self):
+        if self.similitud_matrix is None:
+            self.build_similitud_matrix()
 
     def predict(self, user: User, book: Book) -> float:
         """
@@ -183,7 +201,9 @@ class HybridRecommender:
         """
         preds = []
         for book in self.books:
+            print(f"Start computing prediction of {book.title} for user {user.name}")
             preds.append((book, self.predict(user, book)))
+            print(f"End computing prediction of {book.title} for user {user.name}")
 
         preds.sort(key=lambda x: x[1], reverse=True)
         return [x[0] for x in preds[:top]]

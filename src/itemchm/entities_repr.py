@@ -1,4 +1,4 @@
-from kmeans import ISimilar
+from itemchm.kmeans import ISimilar
 
 class Book(ISimilar):
     def __init__(self, id : int, title : str, author : str, year : int, language : str, genres : list[str]):
