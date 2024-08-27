@@ -9,6 +9,9 @@ class Book:
     def __hash__(self) -> int:
         return self.title.__hash__()
     
+    def __str__(self) -> str:
+        return self.title + " by " + self.author + " (" + str(self.year) + ")" + " in " + self.language + " genres: " + str(self.genres)
+    
     @staticmethod
     def similarity(one : "Book", other : "Book") -> float:
         
@@ -31,3 +34,6 @@ class User:
     
     def __hash__(self) -> int:
         return self.name.__hash__()
+    
+    def __str__(self) -> str:
+        return self.name

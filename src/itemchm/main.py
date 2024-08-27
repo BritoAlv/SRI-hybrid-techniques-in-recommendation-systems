@@ -1,5 +1,5 @@
 from entities_repr import Book, User
-from itemchm.hybrid_recommender import HybridRecommender
+from hybrid_recommender import HybridRecommender
 
 principito = Book("El Principito", "Antoine de Saint-Exupéry", 1943, "Spanish", ["Fiction", "Children"])
 alquimista = Book("El Alquimista", "Paulo Coelho", 1988, "Spanish", ["Fiction"])
@@ -17,4 +17,7 @@ users = [user1, user2, user3]
 
 system = HybridRecommender(books, users)
 
-print(system.recommend(user1, 3))
+result = system.recommend(user3, 3)
+
+for book in result:
+    print(book)
