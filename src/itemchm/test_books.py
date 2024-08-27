@@ -4,6 +4,7 @@ principito = Book("El Principito", "Antoine de Saint-Exupéry", 1943, "Spanish",
 alquimista = Book("El Alquimista", "Paulo Coelho", 1988, "Spanish", ["Fiction"])
 angel_demonio = Book("Ángeles y Demonios", "Dan Brown", 2000, "Spanish", ["Fiction", "Mystery"])
 probability_essentials = Book("Probability Essentials", "Jean Jacod", 2003, "English", ["Mathematics"])
+
 harry_potter = Book("Harry Potter and the Philosopher's Stone", "J.K. Rowling", 1997, "English", ["Fiction", "Fantasy"])
 to_kill_a_mockingbird = Book("To Kill a Mockingbird", "Harper Lee", 1960, "English", ["Fiction", "Classic"])
 lord_rings = Book("The Lord of the Rings", "J.R.R. Tolkien", 1954, "English", ["Fiction", "Fantasy"])
@@ -37,4 +38,19 @@ underground_railroad = Book("The Underground Railroad", "Colson Whitehead", 2016
 lincoln_bardo = Book("Lincoln in the Bardo", "George Saunders", 2017, "English", ["Fiction"])
 overstory = Book("The Overstory", "Richard Powers", 2018, "English", ["Fiction"])
 
-books = [principito, alquimista, angel_demonio, probability_essentials, harry_potter, to_kill_a_mockingbird, lord_rings, hunger_games, catcher, gatsby, flies, catch, grapes, gone, lolita, slaughterhouse, watchmen, atonement, possession, sun, ragtime, naked_lunch, gravity_rainbow, white_noise, beloved, midnight_children, house_leaves, corrections, brief_wondrous, cloud_atlas, fortress, kavalier_clay, sympathizer, underground_railroad, lincoln_bardo, overstory]
+introduction_linear_algebra = Book("Introduction to Linear Algebra", "Gilbert Strang", 1993, "English", ["Mathematics"])
+calculus = Book("Calculus", "Michael Spivak", 1967, "English", ["Mathematics"])
+abstract_algebra = Book("Abstract Algebra", "David S. Dummit", 1999, "English", ["Mathematics"])
+real_analysis = Book("Principles of Mathematical Analysis", "Walter Rudin", 1953, "English", ["Mathematics"])
+complex_analysis = Book("Complex Analysis", "Lars Ahlfors", 1953, "English", ["Mathematics"])
+topology = Book("Topology", "James R. Munkres", 1974, "English", ["Mathematics"])
+number_theory = Book("An Introduction to the Theory of Numbers", "G.H. Hardy", 1938, "English", ["Mathematics"])
+discrete_mathematics = Book("Discrete Mathematics and Its Applications", "Kenneth H. Rosen", 1988, "English", ["Mathematics"])
+probability_theory = Book("Probability Theory: The Logic of Science", "E.T. Jaynes", 2003, "English", ["Mathematics"])
+statistical_learning = Book("The Elements of Statistical Learning", "Trevor Hastie", 2001, "English", ["Mathematics"])
+
+books = [
+    principito, alquimista, angel_demonio, probability_essentials, harry_potter, to_kill_a_mockingbird, lord_rings, hunger_games, catcher, gatsby, flies, catch, grapes, gone, lolita, slaughterhouse, watchmen, atonement, possession, sun, ragtime, naked_lunch, gravity_rainbow,
+    white_noise, beloved, midnight_children, house_leaves, corrections, brief_wondrous, cloud_atlas, fortress, kavalier_clay, sympathizer, underground_railroad, lincoln_bardo, overstory,
+    introduction_linear_algebra, calculus, abstract_algebra, real_analysis, complex_analysis, topology, number_theory, discrete_mathematics, probability_theory, statistical_learning
+]
