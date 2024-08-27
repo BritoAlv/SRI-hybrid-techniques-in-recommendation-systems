@@ -6,13 +6,27 @@ class HybridRecommender:
     def __init__(self, books: list[Book], users: list[User]):
         self.books = books
         self.users = users
+
         self.item_rating: None | dict[Book, User] = None
         self.group_rating: None | dict[Book, list[float]] = None
+
         self.item_rating_similitud: None | dict[Book, dict[Book, float]] = None
         self.group_rating_similitud: None | dict[Book, dict[Book, float]] = None
         self.similitud_matrix : None | dict[Book, dict[Book, float]] = None
         self.averages_book: None | dict[Book, float] = None
         self.averages_user: None | dict[User, float] = None
+
+    def show_group_rating(self):
+        if self.group_rating is None:
+            self.build_group_rating()
+        
+        for book in self.books:
+            print(book.title, ":", end = " ")
+            for i in range(len(self.group_rating[book])):
+                print(self.group_rating[book][i], end = " ")
+            print()
+        print()
+        
 
     def build_item_rating(self):
         result = {}
@@ -65,7 +79,7 @@ class HybridRecommender:
         for book in self.books:
             result[book] = {}
             for centroid in centroids:
-                result[book][centroid] = Book.similarity(book, centroid)
+                result[book].append(Book.similarity(book, centroid))
                 
         self.group_rating = result
 
@@ -128,6 +142,13 @@ class HybridRecommender:
             self.build_averages_user()
         assert self.group_rating != None
 
+        cluster_avgs = [0] * len(self.group_rating[self.books[0]])
+        for book in self.books:
+            for i in range(len(self.group_rating[book])):
+                cluster_avgs[i] += self.group_rating[book][i]
+        for i in range(len(cluster_avgs)):
+            cluster_avgs[i] /= len(self.books)
+
         result = {}
         for book in self.books:
             result[book] = {}
@@ -135,13 +156,12 @@ class HybridRecommender:
                 num = 0
                 den1 = 0
                 den2 = 0
-                for user in self.users:
-                    if book.title in user.ratings and other.title in user.ratings:
-                        num += (user.ratings[book.title] - self.averages_user[user]) * (
-                            user.ratings[other.title] - self.averages_user[user]
-                        )
-                        den1 += (user.ratings[book.title] - self.averages_user[user]) ** 2
-                        den2 += (user.ratings[other.title] - self.averages_user[user]) ** 2
+                for cluster in range(len(self.group_rating[book])):
+                    num += (self.group_rating[book][cluster] - cluster_avgs[cluster]) * (
+                            self.group_rating[other][cluster] - cluster_avgs[cluster]
+                    )
+                    den1 += (self.group_rating[book][cluster] - cluster_avgs[cluster]) ** 2
+                    den2 += (self.group_rating[other][cluster] - cluster_avgs[cluster]) ** 2
                 if den1 == 0 or den2 == 0:
                     result[book][other] = 0
                 else:
