@@ -12,10 +12,8 @@ selected_user = User("BritoAlv", { "Probability Essentials" : 5})
 
 result = system.recommend(selected_user, 5)
 
-
 for book in result:
     print(book)
 
 print("")
-
 print(selected_user)

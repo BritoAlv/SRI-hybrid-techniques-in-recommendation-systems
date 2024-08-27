@@ -1,4 +1,6 @@
-class Book:
+from kmeans import ISimilar
+
+class Book(ISimilar):
     def __init__(self, title : str, author : str, year : int, language : str, genres : list[str]):
         self.title = title
         self.author = author
@@ -12,9 +14,9 @@ class Book:
     def __str__(self) -> str:
         return self.title + " by " + self.author + " (" + str(self.year) + ")" + " in " + self.language + " genres: " + str(self.genres)
     
-    @staticmethod
-    def similarity(one : "Book", other : "Book") -> float:
-        
+    
+    def similarity(self, other : "Book") -> float:
+        one = self
         matches = 10
         if one.author == other.author:
             matches += 3
@@ -27,14 +29,14 @@ class Book:
 
         return (matches / 15) * len(set(one.genres).intersection(set(other.genres))) / len(set(one.genres).union(set(other.genres)))
 
-class User:
+class User():
     def __init__(self, name : str, ratings : dict[str, float]):
         self.name = name
         self.ratings = ratings
     
     def __hash__(self) -> int:
         return self.name.__hash__()
-    
+        
     def __str__(self) -> str:
         rs = self.name + " rated :" + "\n"
         to_order = []

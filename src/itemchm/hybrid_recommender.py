@@ -1,6 +1,6 @@
-import random
 import numpy as np
 from entities_repr import Book, User
+from kmeans import Kmeans
 
 class HybridRecommender:
     def __init__(self, books: list[Book], users: list[User]):
@@ -8,15 +8,18 @@ class HybridRecommender:
         self.users = users
 
         self.item_rating: None | dict[Book, User] = None
-        self.group_rating: None | dict[Book, list[float]] = None
+        self.group_rating_by_book: None | dict[Book, list[float]] = None
 
         self.item_rating_similitud: None | dict[Book, dict[Book, float]] = None
-        self.group_rating_similitud: None | dict[Book, dict[Book, float]] = None
-        self.similitud_matrix : None | dict[Book, dict[Book, float]] = None
+        self.group_rating_similitud_book: None | dict[Book, dict[Book, float]] = None
+        self.similitud_matrix: None | dict[Book, dict[Book, float]] = None
         self.averages_book: None | dict[Book, float] = None
         self.averages_user: None | dict[User, float] = None
 
     def build_item_rating(self):
+        """
+        build item - item matrix
+        """
         result = {}
         for book in self.books:
             result[book] = {}
@@ -26,52 +29,15 @@ class HybridRecommender:
         self.item_rating = result
 
     def build_group_rating(self, number_clusters=40):
-        result = {}
-        number_clusters = min(number_clusters, len(self.books))
-        for book in self.books:
-            result[book] = [0] * number_clusters
-        self.group_rating = result
-
-        def assign_clusters(clusters : list[list[Book]], centroids : list[Book]):
-            for book in self.books:
-                similarity = [Book.similarity(book, centroid) for centroid in centroids]
-                cluster = similarity.index(max(similarity))
-                clusters[cluster].append(book)
-
-        def update_centroids(clusters : list[list[Book]], centroids : list[Book]):
-            new_centroids = []
-            for i in range(number_clusters):
-                if clusters[i]:
-                    max_similarity_product = -1
-                    new_centroid = None
-                    for book in clusters[i]:
-                        similarity_product = 1
-                        for other in clusters[i]:
-                            similarity_product *= Book.similarity(book, other)
-                        if similarity_product > max_similarity_product:
-                            max_similarity_product = similarity_product
-                            new_centroid = book
-                    new_centroids.append(new_centroid)
-            return new_centroids
-
-        clusters = [[] for _ in range(number_clusters)]
-        centroids = random.sample(self.books, number_clusters)
-        for _ in range(10):
-            assign_clusters(clusters, centroids)
-            new_centroids = update_centroids(clusters, centroids)
-            if new_centroids == centroids:
-                break
-            else:
-                centroid = new_centroids
-
-        for book in self.books:
-            result[book] = []
-            for centroid in centroids:
-                result[book].append(Book.similarity(book, centroid))
-                
-        self.group_rating = result
+        """
+        build group - item matrix using K - Means
+        """
+        self.group_rating_by_book = Kmeans(self.books, number_clusters)
 
     def build_averages_book(self):
+        """
+        compute average rating of book
+        """
         averages = {}
         for book in self.books:
             averages[book] = 0
@@ -85,12 +51,18 @@ class HybridRecommender:
         self.averages_book = averages
 
     def build_averages_user(self):
+        """
+        compute average rating of user.
+        """
         averages = {}
         for user in self.users:
             averages[user] = sum(user.ratings.values()) / len(user.ratings)
         self.averages_user = averages
 
     def build_item_rating_similitud(self):
+        """
+        build item - item similitud matrix.
+        """
         if self.item_rating is None:
             self.build_item_rating()
         if self.averages_book is None:
@@ -98,7 +70,7 @@ class HybridRecommender:
         result = {}
         for book in self.books:
             result[book] = {}
-            users_with_book : list[User] = []
+            users_with_book: list[User] = []
             for user in self.users:
                 if book.title in user.ratings:
                     users_with_book.append(user)
@@ -124,16 +96,19 @@ class HybridRecommender:
         self.item_rating_similitud = result
 
     def build_group_rating_similitud(self):
-        if self.group_rating is None:
+        """
+        build group - group rating matrix.
+        """
+        if self.group_rating_by_book is None :
             self.build_group_rating()
         if self.averages_user is None:
             self.build_averages_user()
-        assert self.group_rating != None
+        assert self.group_rating_by_book != None
 
-        cluster_avgs = [0] * len(self.group_rating[self.books[0]])
+        cluster_avgs = [0] * len(self.group_rating_by_book[self.books[0]])
         for book in self.books:
-            for i in range(len(self.group_rating[book])):
-                cluster_avgs[i] += self.group_rating[book][i]
+            for i in range(len(self.group_rating_by_book[book])):
+                cluster_avgs[i] += self.group_rating_by_book[book][i]
         for i in range(len(cluster_avgs)):
             cluster_avgs[i] /= len(self.books)
 
@@ -144,26 +119,33 @@ class HybridRecommender:
                 num = 0
                 den1 = 0
                 den2 = 0
-                for cluster in range(len(self.group_rating[book])):
-                    num += (self.group_rating[book][cluster] - cluster_avgs[cluster]) * (
-                            self.group_rating[other][cluster] - cluster_avgs[cluster]
-                    )
-                    den1 += (self.group_rating[book][cluster] - cluster_avgs[cluster]) ** 2
-                    den2 += (self.group_rating[other][cluster] - cluster_avgs[cluster]) ** 2
+                for cluster in range(len(self.group_rating_by_book[book])):
+                    num += (
+                        self.group_rating_by_book[book][cluster] - cluster_avgs[cluster]
+                    ) * (self.group_rating_by_book[other][cluster] - cluster_avgs[cluster])
+                    den1 += (
+                        self.group_rating_by_book[book][cluster] - cluster_avgs[cluster]
+                    ) ** 2
+                    den2 += (
+                        self.group_rating_by_book[other][cluster] - cluster_avgs[cluster]
+                    ) ** 2
                 if den1 == 0 or den2 == 0:
                     result[book][other] = 0
                 else:
                     result[book][other] = num / (np.sqrt(den1) * np.sqrt(den2))
 
-        self.group_rating_similitud = result
+        self.group_rating_similitud_book = result
 
     def build_similitud_matrix(self, linear_coef=0.4):
+        """
+        combine matrix to produce final matrix.
+        """
         if self.item_rating_similitud is None:
             self.build_item_rating_similitud()
-        if self.group_rating_similitud is None:
+        if self.group_rating_similitud_book is None:
             self.build_group_rating_similitud()
         assert self.item_rating_similitud != None
-        assert self.group_rating_similitud != None
+        assert self.group_rating_similitud_book != None
 
         result = {}
         for book in self.books:
@@ -171,17 +153,19 @@ class HybridRecommender:
             for other in self.books:
                 result[book][other] = (
                     linear_coef * self.item_rating_similitud[book][other]
-                    + (1 - linear_coef) * self.group_rating_similitud[book][other]
+                    + (1 - linear_coef) * self.group_rating_similitud_book[book][other]
                 )
 
         self.similitud_matrix = result
 
     def predict(self, user: User, book: Book) -> float:
+        """
+        predict given User and book.
+        """
         if self.similitud_matrix is None:
             self.build_similitud_matrix()
         assert self.similitud_matrix != None
-
-        average_rating_book = self.averages_book[book]
+        prediction = self.averages_book[book]
         num = 0
         den = 0
         for other in self.books:
@@ -189,11 +173,14 @@ class HybridRecommender:
                 sim = self.similitud_matrix[book][other]
                 num += (user.ratings[other.title] - self.averages_book[other]) * sim
                 den += abs(sim)
-        if den == 0:
-            return average_rating_book
-        return average_rating_book + num / den
+        if den != 0:
+            prediction += num / den
+        return prediction
 
     def recommend(self, user: User, top: int) -> list[Book]:
+        """
+        use top predictions to recommend a book.
+        """
         preds = []
         for book in self.books:
             preds.append((book, self.predict(user, book)))
