@@ -28,6 +28,23 @@ def register():
 def login():
     return send_file("./public/login.html")
 
+@app.route('/survey', methods = ['GET'])
+def survey():
+    return send_file("./public/survey.html")
+
+@app.route('/recomended', methods = ['GET'])
+def recomended():
+    return send_file("./public/recomended.html")
+
+@app.route('/search', methods = ['GET'])
+def searchPage():
+    return send_file("./public/search.html")
+
+@app.route('/book', methods = ['GET'])
+def book():
+    return send_file("./public/book.html")
+
+
 
 @app.route('/bookshelf/register', methods = ['POST'])
 def register_user():
