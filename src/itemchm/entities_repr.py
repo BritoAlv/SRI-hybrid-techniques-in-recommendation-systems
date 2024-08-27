@@ -1,7 +1,8 @@
 from kmeans import ISimilar
 
 class Book(ISimilar):
-    def __init__(self, title : str, author : str, year : int, language : str, genres : list[str]):
+    def __init__(self, id : int, title : str, author : str, year : int, language : str, genres : list[str]):
+        self.id = id
         self.title = title
         self.author = author
         self.year = year
@@ -9,7 +10,7 @@ class Book(ISimilar):
         self.genres = genres
 
     def __hash__(self) -> int:
-        return self.title.__hash__()
+        return self.title.__hash__() + self.id.__hash__()
     
     def __str__(self) -> str:
         return self.title + " by " + self.author + " (" + str(self.year) + ")" + " in " + self.language + " genres: " + str(self.genres)
@@ -30,19 +31,20 @@ class Book(ISimilar):
         return (matches / 15) * len(set(one.genres).intersection(set(other.genres))) / len(set(one.genres).union(set(other.genres)))
 
 class User():
-    def __init__(self, name : str, ratings : dict[str, float]):
+    def __init__(self, id : int, name : str, ratings : dict[int, float]):
+        self.id = id
         self.name = name
         self.ratings = ratings
     
     def __hash__(self) -> int:
-        return self.name.__hash__()
+        return self.name.__hash__() + self.id.__hash__()
         
     def __str__(self) -> str:
         rs = self.name + " rated :" + "\n"
         to_order = []
-        for title in self.ratings.keys():
-            to_order.append((title, self.ratings[title]))
+        for id in self.ratings.keys():
+            to_order.append((id, self.ratings[id]))
         to_order.sort(key = lambda x: x[1], reverse = True)
-        for title, rating in to_order:
-            rs += title + " : " + str(rating) + "\n"
+        for id, rating in to_order:
+            rs += id + " : " + str(rating) + "\n"
         return rs
