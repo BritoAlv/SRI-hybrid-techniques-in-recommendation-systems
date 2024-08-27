@@ -3,7 +3,7 @@ from entities_repr import Book, User
 from test_books import books
 
 # Generate random ratings for the books
-def generate_random_ratings( books : list[Book]) -> dict[str, float]:
+def generate_random_ratings( books : list[Book]) -> dict[id, float]:
     ratings = {}
     selected_books = rd.sample(books, rd.randint(1, len(books)))
     for book in selected_books:

@@ -1,5 +1,4 @@
-import random
-from entities_repr import Book, User
+from entities_repr import User
 from test_books import books
 from test_user import generate_users
 from hybrid_recommender import HybridRecommender

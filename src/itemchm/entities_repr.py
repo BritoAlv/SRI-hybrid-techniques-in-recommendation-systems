@@ -28,7 +28,13 @@ class Book(ISimilar):
         if one.language == other.language:
             matches += 1
 
-        return (matches / 15) * len(set(one.genres).intersection(set(other.genres))) / len(set(one.genres).union(set(other.genres)))
+        result = matches / 15
+        intersec = len(set(one.genres).intersection(set(other.genres)))
+        union = len(set(one.genres).union(set(other.genres)))
+        if union != 0:
+            result *= intersec / union 
+
+        return result
 
 class User():
     def __init__(self, id : int, name : str, ratings : dict[int, float]):
