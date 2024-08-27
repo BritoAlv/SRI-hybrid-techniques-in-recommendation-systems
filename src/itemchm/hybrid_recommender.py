@@ -23,7 +23,7 @@ class HybridRecommender:
                     result[book][user] = user.ratings[book.title]
         self.item_rating = result
 
-    def build_group_rating(self, number_clusters=2):
+    def build_group_rating(self, number_clusters=40):
         result = {}
         number_clusters = min(number_clusters, len(self.books))
         for book in self.books:
@@ -61,7 +61,6 @@ class HybridRecommender:
                 break
             else:
                 centroid = new_centroids
-
 
         for book in self.books:
             result[book] = {}

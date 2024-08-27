@@ -36,4 +36,11 @@ class User:
         return self.name.__hash__()
     
     def __str__(self) -> str:
-        return self.name
+        rs = self.name + " rated :" + "\n"
+        to_order = []
+        for title in self.ratings.keys():
+            to_order.append((title, self.ratings[title]))
+        to_order.sort(key = lambda x: x[1], reverse = True)
+        for title, rating in to_order:
+            rs += title + " : " + str(rating) + "\n"
+        return rs
