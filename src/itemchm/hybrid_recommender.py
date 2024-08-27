@@ -24,8 +24,8 @@ class HybridRecommender:
         for book in self.books:
             result[book] = {}
             for user in self.users:
-                if book.title in user.ratings:
-                    result[book][user] = user.ratings[book.title]
+                if book.id in user.ratings:
+                    result[book][user] = user.ratings[book.id]
         self.item_rating = result
 
     def build_group_rating(self, number_clusters=40):
@@ -43,8 +43,8 @@ class HybridRecommender:
             averages[book] = 0
             raters = 0
             for user in self.users:
-                if book.title in user.ratings:
-                    averages[book] += user.ratings[book.title]
+                if book.id in user.ratings:
+                    averages[book] += user.ratings[book.id]
                     raters += 1
             if raters > 0:
                 averages[book] /= raters
@@ -72,14 +72,14 @@ class HybridRecommender:
             result[book] = {}
             users_with_book: list[User] = []
             for user in self.users:
-                if book.title in user.ratings:
+                if book.id in user.ratings:
                     users_with_book.append(user)
             for other in self.books:
                 num = 0
                 den1 = 0
                 den2 = 0
                 for user in users_with_book:
-                    if other.title in user.ratings:
+                    if other.id in user.ratings:
                         num += (
                             self.item_rating[book][user] - self.averages_book[book]
                         ) * (self.item_rating[other][user] - self.averages_book[other])
@@ -169,9 +169,9 @@ class HybridRecommender:
         num = 0
         den = 0
         for other in self.books:
-            if other.title in user.ratings:
+            if other.id in user.ratings:
                 sim = self.similitud_matrix[book][other]
-                num += (user.ratings[other.title] - self.averages_book[other]) * sim
+                num += (user.ratings[other.id] - self.averages_book[other]) * sim
                 den += abs(sim)
         if den != 0:
             prediction += num / den

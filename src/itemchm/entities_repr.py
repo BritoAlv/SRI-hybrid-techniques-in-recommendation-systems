@@ -46,5 +46,5 @@ class User():
             to_order.append((id, self.ratings[id]))
         to_order.sort(key = lambda x: x[1], reverse = True)
         for id, rating in to_order:
-            rs += id + " : " + str(rating) + "\n"
+            rs += str(id) + " : " + str(rating) + "\n"
         return rs
