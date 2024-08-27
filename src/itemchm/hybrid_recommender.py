@@ -16,18 +16,6 @@ class HybridRecommender:
         self.averages_book: None | dict[Book, float] = None
         self.averages_user: None | dict[User, float] = None
 
-    def show_group_rating(self):
-        if self.group_rating is None:
-            self.build_group_rating()
-        
-        for book in self.books:
-            print(book.title, ":", end = " ")
-            for i in range(len(self.group_rating[book])):
-                print(self.group_rating[book][i], end = " ")
-            print()
-        print()
-        
-
     def build_item_rating(self):
         result = {}
         for book in self.books:
@@ -77,7 +65,7 @@ class HybridRecommender:
                 centroid = new_centroids
 
         for book in self.books:
-            result[book] = {}
+            result[book] = []
             for centroid in centroids:
                 result[book].append(Book.similarity(book, centroid))
                 
