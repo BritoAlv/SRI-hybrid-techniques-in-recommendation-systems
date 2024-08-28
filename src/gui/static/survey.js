@@ -21,7 +21,7 @@ document.getElementById("form").addEventListener("submit", async (e) => {
             },
             body: JSON.stringify(data),
         })
-        // location.href = "/"
+        location.href = "/"
       } catch (error) {
         console.log(error)
       } 

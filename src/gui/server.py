@@ -18,7 +18,7 @@ def login():
 def survey():
     return send_file("./public/survey.html")
 
-@app.route('/recomended', methods = ['GET'])
+@app.route('/recommended', methods = ['GET'])
 def recomended():
     return send_file("./public/recomended.html")
 
