@@ -60,51 +60,6 @@ def login_user():
     response = Response.user(user.id, email)
     return jsonify(response), 200
 
-
-@app.route('/bookshelf/features', methods = ['GET'])
-def features_get():
-    # Retrieve genres
-    with Session(ENGINE) as session:
-        genres = [genre.name for genre in session.query(Genre).all()]
-
-    # Retrieve top authors
-    with open(f'{DATA_DIRECTORY}top_authors.json', 'r') as file:
-        top_authors = json.load(file)
-
-    response = Response.features(
-        genres,
-        top_authors['authors'][:20],
-        [0, 1, 2]
-    )
-
-    return jsonify(response), 200
-
-
-@app.route('/bookshelf/features', methods = ['POST'])
-def features_post():
-    # Extract data from request
-    data = request.get_json()
-    user_id = data['user_id']
-    data = {
-        'genres': data['genres'],
-        'authors': data['authors'],
-        'time_periods': data['time_periods']
-    }
-    data = json.dumps(data)
-
-    # Update user's features
-    with Session(ENGINE) as session:
-        user = session.query(User).filter(User.id == user_id).first()
-        
-        if user == None:
-            return jsonify(Response.error(f"user_id {user_id} is not registered"))
-
-        statement = update(User).where(User.id == user_id).values(features=data)
-        session.execute(statement)
-        session.commit()
-
-    return "200 OK", 200
-
 @app.route('/bookshelf/rating', methods = ['POST'])
 def rating():
     data = request.get_json()
