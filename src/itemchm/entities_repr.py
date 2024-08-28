@@ -12,6 +12,11 @@ class Book(ISimilar):
     def __hash__(self) -> int:
         return self.title.__hash__() + self.id.__hash__()
     
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, Book):
+            return False
+        return self.id == value.id
+    
     def __str__(self) -> str:
         return self.title + " by " + self.author + " (" + str(self.year) + ")" + " in " + self.language + " genres: " + str(self.genres)
     
