@@ -1,5 +1,4 @@
 import json
-from threading import Thread
 from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
 from sqlalchemy import create_engine, update
@@ -14,10 +13,10 @@ app = Flask(__name__)
 CORS(app)
 
 ENGINE = create_engine("sqlite:////../../bookshelf.db", echo=True) # From file directory
-DATA_DIRECTORY = './data/system.pkl'
-RECOMMENDER_HANDLER = RecommenderHandler()
 
-# Thread(target=RECOMMENDER_HANDLER._update()).start()
+DATA_DIRECTORY = './data/'
+
+RECOMMENDER_HANDLER = RecommenderHandler()
 
 @app.route('/bookshelf/register', methods = ['POST'])
 def register_user():
@@ -162,7 +161,5 @@ def recommend(user_id):
 
     return jsonify(response), 200
     
-print("Api ready")
-
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5000)

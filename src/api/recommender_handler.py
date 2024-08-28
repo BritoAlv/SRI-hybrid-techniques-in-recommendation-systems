@@ -21,6 +21,8 @@ class RecommenderHandler:
         self._lock = Lock()
         self._acquired = False
 
+        Thread(target=self._update).start()
+
     def acquire(self):
         with self._lock:
             while self._acquired:
@@ -79,7 +81,7 @@ class RecommenderHandler:
     @staticmethod
     def instantiate_user(user_id : int):
         # Create engine
-        ENGINE = create_engine("sqlite:////home/javier/Core/Computer Science/Projects/IRS/SRI-hybrid-techniques-in-recommendation-systems/bookshelf.db", echo=True)
+        ENGINE = create_engine("sqlite:////../../bookshelf.db", echo=True)
 
         with Session(ENGINE) as session:
             db_user = session.query(db.User).where(db.User.id == user_id).first()
