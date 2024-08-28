@@ -3,8 +3,8 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
-.db
-.pkl
+*.db
+*.pkl
 
 # sqlite cache files
 *.db-shm

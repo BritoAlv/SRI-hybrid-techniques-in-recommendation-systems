@@ -1,5 +1,4 @@
 from enum import Enum
-import logging
 from queue import PriorityQueue
 import random
 import requests
@@ -8,8 +7,7 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import create_engine
 from faker import Faker
 import difflib
-
-from entities import Book, BookGenre, Genre, User, UserBook
+from itemchm.persistence.entities import Book, BookGenre, Genre, User, UserBook
 
 TOP_SIZE = 1000
 

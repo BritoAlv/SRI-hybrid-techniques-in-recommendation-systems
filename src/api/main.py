@@ -1,21 +1,23 @@
 import json
-import random
-from flask import Flask, Response, jsonify, request, send_file
+from threading import Thread
+from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
-from sqlalchemy import create_engine, select, update
+from sqlalchemy import create_engine, update
 from sqlalchemy.orm import Session
 
-from entities import Book, Genre, User, UserBook
-from recommender import Recommender
-from response import Response
+from api.recommender_handler import RecommenderHandler
+from itemchm.hybrid_recommender import HybridRecommender
+from itemchm.persistence.entities import Book, Genre, User, UserBook
+from api.response import Response
 
 app = Flask(__name__)
 CORS(app)
 
-ENGINE = create_engine("sqlite:///../../bookshelf.db", echo=True) # From file directory
-DATA_DIRECTORY = './data/'
-RECOMMENDER = Recommender(DATA_DIRECTORY, ENGINE)
-RECOMMENDER = Recommender(DATA_DIRECTORY, ENGINE)
+ENGINE = create_engine("sqlite:////../../bookshelf.db", echo=True) # From file directory
+DATA_DIRECTORY = './data/system.pkl'
+RECOMMENDER_HANDLER = RecommenderHandler()
+
+# Thread(target=RECOMMENDER_HANDLER._update()).start()
 
 @app.route('/bookshelf/register', methods = ['POST'])
 def register_user():
@@ -152,10 +154,15 @@ def search(query : str):
 
 @app.route('/bookshelf/recommend/<user_id>', methods = ['GET'])
 def recommend(user_id):
-    response = RECOMMENDER.recommend(int(user_id))
+    user = RecommenderHandler.instantiate_user(user_id)
+    recommender = RECOMMENDER_HANDLER.get_recommender()
+
+    response = [book.title for book in recommender.recommend(user, 10)]
+    RECOMMENDER_HANDLER.dispose()
 
     return jsonify(response), 200
     
+print("Api ready")
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
