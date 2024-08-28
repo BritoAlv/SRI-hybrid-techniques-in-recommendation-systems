@@ -11,7 +11,8 @@ getData = async () => {
         html = ""
         for (let index = 0; index < a.length; index++) {
           const element = a[index];
-          html += `<p>${element}</p>`
+          console.log(element[0], element[1])
+          html += `<a href="/book?name=${element[0]}&id=${element[1]}">${element[0]}</a>`
         }
         document.getElementById("results").innerHTML = html
       } catch (error) {

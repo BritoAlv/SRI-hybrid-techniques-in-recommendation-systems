@@ -176,7 +176,7 @@ def search(query : str):
     query = query.lower()
 
     with Session(ENGINE) as session:
-        response = [book.name for book in session.query(Book).filter(Book.name.contains(query)).all()]
+        response = [(book.name, book.id) for book in session.query(Book).filter(Book.name.contains(query)).all()]
     return jsonify(response), 200
 
 @app.route('/bookshelf/recommend/<user_id>', methods = ['GET'])
