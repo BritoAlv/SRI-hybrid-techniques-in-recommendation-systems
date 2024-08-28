@@ -3,10 +3,8 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
-# json gutendex data
-gutendex_*
-data
-bookshelf.db
+.db
+.pkl
 
 # sqlite cache files
 *.db-shm
