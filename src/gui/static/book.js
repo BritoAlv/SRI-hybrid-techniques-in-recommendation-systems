@@ -55,6 +55,7 @@ next.addEventListener("click", () => {
   if (pages >= 2) {
     before.style.display = "block"
   }
+  document.getElementById("page").innerHTML = page
 })
 before.addEventListener("click", () => {
   page -= 1
@@ -65,6 +66,7 @@ before.addEventListener("click", () => {
   if (pages >= 2) {
     next.style.display = "block"
   }
+  document.getElementById("page").innerHTML = page
 })
 
 
