@@ -54,7 +54,7 @@ $$A[k][l] = \frac{ \sum_{u = 1}^m (R_{u,k} - R_k)*(R_{u,l} - R_l) }{ \sqrt{\sum_
 
 Donde $k, l$ son dos libros en nuestra base de datos, $m$ es la cantidad de usuarios que interactuaron con ambos libros $k, l$. $R_k,R_l$ son los promedios de los rating recibidos por los libros $k, l$ y $R_{u,k}, R_{u,l}$ son los ratings de los libros $k, l$ dados por el usuario $u$. 
 
-Por cada usuario que interactuó con ambos libros $k,l$ se obtiene un par $(x1, y1)$, en nuestro caso representan el rating obtenido, el coeficiente de Pearson mide la correlación linear entre dos samples $(x_1, x2, ..., x_l)$, $(y1, y2, ..., y_l)$, este coeficiente es un número entre $-1$ y $1$, $1$ indicando que los puntos están alineados con pendiente positiva, $-1$, con pendiente negativa, $0$ es que no existe relación linear entre ellos, si están alineados con pendiente negativa es interpretado como que son *contrarios, o no concuerdan*. 
+Por cada usuario que interactuó con ambos libros $k,l$ se obtiene un par $(x_1, y_1)$, en nuestro caso representan el rating obtenido, el coeficiente de Pearson mide la correlación linear entre dos samples $(x_1, x_2, ..., x_l)$, $(y_1, y_2, ..., y_l)$, este coeficiente es un número entre $-1$ y $1$, $1$ indicando que los puntos están alineados con pendiente positiva, $-1$, con pendiente negativa, $0$ es que no existe relación linear entre ellos, si están alineados con pendiente negativa es interpretado como que son *contrarios, o no concuerdan*. 
 
 ##### Matriz 2:
 
