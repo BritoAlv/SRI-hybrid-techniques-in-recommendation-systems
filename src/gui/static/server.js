@@ -1,6 +1,6 @@
 mostrarAlertaServer = () => {}
 const fetchDefault = (endpoint, init, method, resolve = mostrarAlertaServer, reject = mostrarAlertaServer) => {
-    fetch(`/${endpoint}`, {
+    fetch(`http://127.0.0.1:5000/${endpoint}`, {
         'method': method,
         'headers': {
             'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ const fetchDefault = (endpoint, init, method, resolve = mostrarAlertaServer, rej
 }
 
 const fetchGet = (endpoint, resolve = mostrarAlertaServer, reject = mostrarAlertaServer) => {
-    fetch(`/${endpoint}`, {
+    fetch(`http://127.0.0.1:5000/${endpoint}`, {
         'method': "GET",
         'headers': {
             'Content-Type': 'application/json',

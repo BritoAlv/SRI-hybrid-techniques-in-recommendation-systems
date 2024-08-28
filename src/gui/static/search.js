@@ -1,6 +1,6 @@
 getData = async () => {
     try {
-        a = await fetch(`/bookshelf/search/${document.getElementById("query").value}`, {
+        a = await fetch(`http://127.0.0.1:5000/bookshelf/search/${document.getElementById("query").value}`, {
             'method': "GET",
             'headers': {
                 'Content-Type': 'application/json',

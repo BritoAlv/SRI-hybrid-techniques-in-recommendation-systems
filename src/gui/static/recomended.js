@@ -1,6 +1,6 @@
 getData = async () => {
     try {
-        a = await fetch(`/bookshelf/recommend/${localStorage.getItem("user_id")}`, {
+        a = await fetch(`http://127.0.0.1:5000/bookshelf/recommend/${localStorage.getItem("user_id")}`, {
             'method': "GET",
             'headers': {
                 'Content-Type': 'application/json',

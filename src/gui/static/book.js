@@ -21,7 +21,7 @@ document.getElementById("send").addEventListener("click", async () => {
       }
       console.log(data)
     try {
-        a = await fetch(`/bookshelf/rating`, {
+        a = await fetch(`http://127.0.0.1:5000/bookshelf/rating`, {
             'method': "POST",
             'headers': {
                 'Content-Type': 'application/json',

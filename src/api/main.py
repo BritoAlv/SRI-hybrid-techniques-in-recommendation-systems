@@ -1,6 +1,7 @@
 import json
 import random
 from flask import Flask, Response, jsonify, request, send_file
+from flask_cors import CORS
 from sqlalchemy import create_engine, select, update
 from sqlalchemy.orm import Session
 
@@ -9,6 +10,7 @@ from recommender import Recommender
 from response import Response
 
 app = Flask(__name__)
+CORS(app)
 
 ENGINE = create_engine("sqlite:///../../bookshelf.db", echo=True) # From file directory
 DATA_DIRECTORY = './data/'
