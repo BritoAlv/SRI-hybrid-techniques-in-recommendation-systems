@@ -21,32 +21,33 @@
 </head>
 <body>
     
-    <div class="container">
-        <h3>Survey</h3>
-        <form id="form">
-           <div class=" mt-3">
-                <div class="">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Select the genres you like</label>
-                        <input type="text" class="form-control" name="genres" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Select the autors you like</label>
-                        <input type="text" class="form-control" name="authors" required>
-                    </div>
-
-
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Select the time period you like</label>
-                        <input type="text" class="form-control" name="periods" required>
-                    </div> 
-                </div>
+    <form id="form"  class="container">
+        <div class="mt-3">
+            <div class="mb-3">
+                <label for="genres" class="form-label">Géneros</label>
+                <div id="genres-container"></div>
             </div>
-            <button type="submit" class="btn btn-primary">Accept</button>
-        </form>
-    </div>
+    
+            <div class="mb-3">
+                <label for="authors" class="form-label">Autores</label>
+                <div id="authors-container"></div>
+            </div>
+    
+            <div class="mb-3" id="periods-container">
+                <label for="time-periods" class="form-label">Período de tiempo</label>
+                    <input type="checkbox" id="feature-0" value="Antiguo">
+                    <label for="feature-0">Antiguo</label> 
 
+                    <input type="checkbox" id="feature-1" value="Medieval">
+                    <label for="feature-2">Medieval</label> 
+
+                    <input type="checkbox" id="feature-2" value="Renacimiento">
+                    <label for="feature-2">Renacimiento</label> 
+            </div>
+    
+            <button type="submit" class="btn btn-primary m-5">Aceptar</button>
+        </div>
+    </form>
     
     <script src="../static/server.js"></script>
     <script src="../static/survey.js"></script>
