@@ -27,14 +27,14 @@ Para que nuestra aplicación se mantenga interactiva, cada cierto tiempo recalcu
 
 Con la matriz de similitud $M$ se usa la siguiente fórmula para predecir el rating $r$ de un usuario $u$ a el libro $b$ :
 
-$$r = P_b + \frac{\sum_{i = 1}^n M[i][k]*(R[u][b] - P_b)}{\sum_{i = 1}^n | M[i][k] | }$$
+$$r[u][b] = P_b + \frac{\sum_{i = 1}^n M[i][b]*(R[u][i] - P_i)}{\sum_{i = 1}^n | M[i][b] | }$$
 
-Donde $n$ representa la cantidad de libros con los que el usuario $u$ ha interactuado y están en nuestra base de datos, $R[u][b]$ representa el rating de el usuario $u$ a el libro $b$ y $P_k$ representa el promedio de los ratings que ha recibido el libro $b$.
+Donde $n$ representa la cantidad de libros con los que el usuario $u$ ha interactuado y están en nuestra base de datos, $R[u][b]$ representa el rating de el usuario $u$ a el libro $b$ y $P_b$ representa el promedio de los ratings que ha recibido el libro $b$.
 
 Los dos sumandos de la fórmula anterior son interpretados como:
 
-    - Notar que si el usuario no ha interactuado con ningún libro el sistema predeciría solamente usando los promedios de los ratings de los libros existentes, lo que permite hacer recomendaciones a los usuarios sin tener conocimiento de ellos.
-    - Con respecto a la segunda fórmula, notar que el segundo factor de cada sumando representa una proporción con respecto a el denominador, en otras palabras representa un promedio ponderado de los valores $(R[u][b] - P_b)$, !!!!!!!!!!
+    - Notar que si el usuario no ha interactuado con ningún libro el sistema predeciría solamente usando los promedios de los ratings de los libros existentes ( el primer sumando ), lo que permite hacer recomendaciones a los usuarios sin tener conocimiento de ellos.
+    - Con respecto a la segunda fórmula, notar que el segundo factor de cada sumando representa una proporción con respecto a el denominador, o sea, representa un promedio ponderado. Si estos pesos fueran todos iguales a 1, o sea, fuera un promedio, la fórmula representa la desviación de los ratings obtenidos de el usuario con respecto a la media de ratings obtenidos de usuarios a ese libro, la idea de la ponderación es que los libros más similares ,según nuestra matriz de similitud, a el libro $b$ que se intenta predecir obtengan más peso con respecto a los menos similares. 
 
 La complejidad de realizar este método sería $O(n)$, pero este es calculado por cada libro que hay en nuestra base de datos, asumiendo que hayan $m$ libros esta sería $O(n * m)$, por esta razón tenemos alrededor de $2000$ libros en nuestra base de datos, cifra que permite realizar la recomendación lo suficientemente rápido.
 
@@ -46,13 +46,15 @@ Esta matriz es obtenida a través de la combinación linear de otras dos matrice
 
 ##### Matriz 1:
 
-Sobre un usuario, en nuestra base de datos , contamos con alguna interacción con ciertos libros, usamos esta información para calcular un *rating* para cada libro con el que interactúa el usuario, la forma en que es calculado este rating puede ser realizado de varias formas siempre que se obtenga un número entre [1, 5], describimos en otra sección el método usado. 
+Sobre un usuario, en nuestra base de datos , contamos con alguna interacción con ciertos libros, usamos esta información para calcular un *rating* para cada libro con el que interactúa el usuario descrito como un número entre $[1,5]$. Hay varias formas de hallar este rating, describimos en otra sección el método usado. 
 
-El resultado de el proceso anterior es conocido como *item-rating matrix*, nuestro objetivo es obtener una matriz de similitud a partir de esta *item-rating matrix*. Para hacerlo se usa el *Pearson Correlation Algorithm* ( en otra sección explicamos en que consiste ), en particular la siguiente fórmula:
+El resultado de el proceso anterior es conocido como *item-rating matrix*, nuestro objetivo es obtener una matriz de similitud a partir de esta *item-rating matrix*. Para hacerlo se usa el *Pearson Correlation Algorithm*, en particular la siguiente fórmula:
 
 $$A[k][l] = \frac{ \sum_{u = 1}^m (R_{u,k} - R_k)*(R_{u,l} - R_l) }{ \sqrt{\sum_{u = 1}^m (R_{u,k} - R_k)^2} * \sqrt{\sum_{u = 1}^m (R_{u,l} - R_l)^2} }$$
 
 Donde $k, l$ son dos libros en nuestra base de datos, $m$ es la cantidad de usuarios que interactuaron con ambos libros $k, l$. $R_k,R_l$ son los promedios de los rating recibidos por los libros $k, l$ y $R_{u,k}, R_{u,l}$ son los ratings de los libros $k, l$ dados por el usuario $u$. 
+
+Por cada usuario que interactuó con ambos libros $k,l$ se obtiene un par $(x1, y1)$, en nuestro caso representan el rating obtenido, el coeficiente de Pearson mide la correlación linear entre dos samples $(x_1, x2, ..., x_l)$, $(y1, y2, ..., y_l)$, este coeficiente es un número entre $-1$ y $1$, $1$ indicando que los puntos están alineados con pendiente positiva, $-1$, con pendiente negativa, $0$ es que no existe relación linear entre ellos, si están alineados con pendiente negativa es interpretado como que son *contrarios, o no concuerdan*. 
 
 ##### Matriz 2:
 
