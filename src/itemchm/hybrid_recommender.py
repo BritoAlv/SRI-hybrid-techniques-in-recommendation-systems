@@ -201,9 +201,9 @@ class HybridRecommender:
         """
         preds = []
         for book in self.books:
-            print(f"Start computing prediction of {book.title} for user {user.name}")
+            #print(f"Start computing prediction of {book.title} for user {user.name}")
             preds.append((book, self.predict(user, book)))
-            print(f"End computing prediction of {book.title} for user {user.name}")
+            #print(f"End computing prediction of {book.title} for user {user.name}")
 
         preds.sort(key=lambda x: x[1], reverse=True)
         return [x[0] for x in preds[:top]]

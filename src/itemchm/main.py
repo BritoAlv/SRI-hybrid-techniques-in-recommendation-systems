@@ -2,18 +2,15 @@ from itemchm.entities_repr import User
 from itemchm.hybrid_recommender import HybridRecommender
 
 import pickle as pk
+import random as rd
+import time
 
-with open("system.pk", "wb") as s:
+with open("system.pk", "rb") as s:
     system = pk.load(s)
 
+with open("users.pk", "rb") as u:
+    users = pk.load(u)
+
+
 assert(isinstance(system, HybridRecommender))
-
-selected_user = User(1241241241, "BritoAlv", { 4 : 5})
-
-result = system.recommend(selected_user, 5)
-
-for book in result:
-    print(book)
-
-print("")
-print(selected_user)
+print("Done Loading System")
