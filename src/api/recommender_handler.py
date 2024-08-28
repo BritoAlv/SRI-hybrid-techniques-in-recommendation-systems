@@ -43,7 +43,7 @@ class RecommenderHandler:
 
     def _update_recommender(self):
         # Create engine
-        ENGINE = create_engine("sqlite:////../../bookshelf.db", echo=True)
+        ENGINE = create_engine("sqlite:///../../bookshelf.db", echo=True)
 
         with Session(ENGINE) as session:
             db_users = session.query(db.User).all()
@@ -81,7 +81,7 @@ class RecommenderHandler:
     @staticmethod
     def instantiate_user(user_id : int):
         # Create engine
-        ENGINE = create_engine("sqlite:////../../bookshelf.db", echo=True)
+        ENGINE = create_engine("sqlite:///../../bookshelf.db", echo=True)
 
         with Session(ENGINE) as session:
             db_user = session.query(db.User).where(db.User.id == user_id).first()

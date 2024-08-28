@@ -12,7 +12,7 @@ from api.response import Response
 app = Flask(__name__)
 CORS(app)
 
-ENGINE = create_engine("sqlite:////../../bookshelf.db", echo=True) # From file directory
+ENGINE = create_engine("sqlite:///../../bookshelf.db", echo=True) # From file directory
 
 DATA_DIRECTORY = './data/'
 
