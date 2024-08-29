@@ -11,7 +11,6 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     email = Column(String)
-    features = Column(String, nullable=True)
     userBooks = relationship("UserBook", back_populates='user')
 
     def __repr__(self):
