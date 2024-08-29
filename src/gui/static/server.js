@@ -11,7 +11,12 @@ const fetchDefault = (endpoint, init, method, resolve = mostrarAlertaServer, rej
         return res.json();
     })
     .then(data => {
-        resolve(data);
+        if (data.message != null) {
+            reject(data)
+        }
+        else {
+            resolve(data);
+        }
     })
     .catch(err => { 
         reject(err);
