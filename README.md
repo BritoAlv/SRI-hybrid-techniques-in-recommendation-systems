@@ -49,10 +49,10 @@ Para Windows o IOS diríjase a los siguientes enlaces:
 
 ### Paquetes
 
-En el proyecto fueron utilizados una serie de paquetes de Python, por favor, ejecute el script de bash **packages.sh** para garantizar que los posee todos correctamente instalados.
+En el proyecto fueron utilizados una serie de paquetes de Python, por favor, ejecute el siguiente comando para asegurarse que los tiene correctamente instalados
 
 ```bash
-bash packages.sh
+pip install -r requirements.txt
 ```
 
 ## Ejecución del proyecto
