@@ -94,7 +94,7 @@ def rating_post():
         if book == None:
             return jsonify(Response.error(f"book_id {book_id} does not exist"))
 
-        user_book = session.query(UserBook).filter(UserBook.userId == user_id and UserBook.bookId == book_id).first()
+        user_book = session.query(UserBook).filter(UserBook.userId == user_id, UserBook.bookId == book_id).first()
 
         if user_book == None:
             user_book = UserBook(user_id, book_id)
