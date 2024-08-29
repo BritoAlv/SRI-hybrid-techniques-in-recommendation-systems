@@ -3,10 +3,11 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
-# json gutendex data
-gutendex_*
-data
-bookshelf.db
+*.db
+*.pkl
+data/
+.vscode/
+
 
 # sqlite cache files
 *.db-shm
@@ -491,3 +492,11 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+src/itemchm/books.pk
+src/itemchm/system.pk
+src/itemchm/users_test.pk
+src/itemchm/users.pk
+src/itemchm/backup/books.pk
+src/itemchm/backup/system.pk
+src/itemchm/backup/users_test.pk
+src/itemchm/backup/users.pk
