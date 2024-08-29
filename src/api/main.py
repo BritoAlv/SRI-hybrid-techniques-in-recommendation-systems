@@ -1,19 +1,22 @@
 import json
-import random
 from flask import Flask, Response, jsonify, request
-from sqlalchemy import create_engine, select, update
+from flask_cors import CORS
+from sqlalchemy import create_engine, update
 from sqlalchemy.orm import Session
 
-from entities import Book, Genre, User, UserBook
-from recommender import Recommender
-from response import Response
+from api.recommender_handler import RecommenderHandler
+from itemchm.hybrid_recommender import HybridRecommender
+from itemchm.persistence.entities import Book, Genre, User, UserBook
+from api.response import Response
 
 app = Flask(__name__)
+CORS(app)
 
 ENGINE = create_engine("sqlite:///../../bookshelf.db", echo=True) # From file directory
+
 DATA_DIRECTORY = './data/'
-RECOMMENDER = Recommender(DATA_DIRECTORY, ENGINE)
-RECOMMENDER = Recommender(DATA_DIRECTORY, ENGINE)
+
+RECOMMENDER_HANDLER = RecommenderHandler()
 
 @app.route('/bookshelf/register', methods = ['POST'])
 def register_user():
@@ -56,51 +59,6 @@ def login_user():
     
     response = Response.user(user.id, email)
     return jsonify(response), 200
-
-
-@app.route('/bookshelf/features', methods = ['GET'])
-def features_get():
-    # Retrieve genres
-    with Session(ENGINE) as session:
-        genres = [genre.name for genre in session.query(Genre).all()]
-
-    # Retrieve top authors
-    with open(f'{DATA_DIRECTORY}top_authors.json', 'r') as file:
-        top_authors = json.load(file)
-
-    response = Response.features(
-        genres,
-        top_authors['authors'][:20],
-        [0, 1, 2]
-    )
-
-    return jsonify(response), 200
-
-
-@app.route('/bookshelf/features', methods = ['POST'])
-def features_post():
-    # Extract data from request
-    data = request.get_json()
-    user_id = data['user_id']
-    data = {
-        'genres': data['genres'],
-        'authors': data['authors'],
-        'time_periods': data['time_periods']
-    }
-    data = json.dumps(data)
-
-    # Update user's features
-    with Session(ENGINE) as session:
-        user = session.query(User).filter(User.id == user_id).first()
-        
-        if user == None:
-            return jsonify(Response.error(f"user_id {user_id} is not registered"))
-
-        statement = update(User).where(User.id == user_id).values(features=data)
-        session.execute(statement)
-        session.commit()
-
-    return "200 OK", 200
 
 @app.route('/bookshelf/rating', methods = ['POST'])
 def rating():
@@ -145,15 +103,18 @@ def search(query : str):
     query = query.lower()
 
     with Session(ENGINE) as session:
-        response = [book.name for book in session.query(Book).filter(Book.name.contains(query)).all()]
+        response = [(book.name, book.id) for book in session.query(Book).filter(Book.name.contains(query)).all()]
     return jsonify(response), 200
 
 @app.route('/bookshelf/recommend/<user_id>', methods = ['GET'])
 def recommend(user_id):
-    response = RECOMMENDER.recommend(int(user_id))
+    user = RecommenderHandler.instantiate_user(user_id)
+    recommender = RECOMMENDER_HANDLER.get_recommender()
+
+    response = [book.title for book in recommender.recommend(user, 10)]
+    RECOMMENDER_HANDLER.dispose()
 
     return jsonify(response), 200
     
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, port=5000)

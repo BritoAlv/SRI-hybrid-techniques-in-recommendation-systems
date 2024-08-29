@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bookshelf</title>
+    <style>
+        
+    </style>
+
+    <link rel="stylesheet" href="../static/complements/bootstrap/css/bootstrap.min.css">
+    <link href="index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/font/bootstrap-icons.css">
+
+
+    <script src="../static/complements/jquery.js"></script>
+    <script src="../static/complements/popper.js"></script>
+    <script src="../static/complements/bootstrap/js/bootstrap.bundle.js"></script>
+
+
+</head>
+<body>
+    
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light rounded" aria-label="Eleventh navbar example">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample09" aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarsExample09">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/search">Search</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/recommended">Recommended Books</a>
+                </li>
+              </ul>
+              <div>
+                <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/survey">Survey</a>
+                    </li>
+                    <li class="nav-item">
+                        <p class="nav-link"   onclick="localStorage.clear()">Logout</p>
+                    </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </nav>
+    </div>
+
+
+    <div class="container mt-3">
+        <h1 id="title">title</h1>
+        
+        <div class="row align-items-baseline">
+            <p class="col-8">Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit molestiae delectus iusto voluptates modi ex adipisci aliquam ipsa. Dolore quia quae aliquam consequatur repudiandae aperiam quam fugit recusandae similique libero. Provident quod aperiam labore!</p>
+            <button id="share" class="me-2 btn btn-primary col-2">Share</button>
+        </div>
+
+        <div class="d-flex justify-content-around">
+            <div class="d-flex justify-content-center mt-3">
+                <div class="star-rating">
+                    <i class="bi bi-star star text-warning" id="star-0" data-rating="5"></i>
+                    <i class="bi bi-star star text-warning" id="star-1" data-rating="1"></i>
+                    <i class="bi bi-star star text-warning" id="star-2" data-rating="2"></i>
+                    <i class="bi bi-star star text-warning" id="star-3" data-rating="3"></i>
+                    <i class="bi bi-star star text-warning" id="star-4" data-rating="4"></i>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center align-items-baseline">
+                <button id="before" class="me-2 btn btn-primary" style="display: none;">Previous page</button>
+                <p class="page m-4" id="page">1</p>
+                <button id="next" class="me-2 btn btn-primary">Next page</button>
+            </div>
+
+            
+        </div>
+        <div class=" d-flex justify-content-center mt-3">
+            <div>
+                <div>
+                    <h3>Leave a comment</h3>
+                    <textarea name="comment" id="comment" rows="10" cols="30"></textarea>
+                </div>
+        
+                <div>
+                    <button id="send" class="btn btn-info">Send</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    
+    <script src="../static/loggued.js"></script>
+    <script src="../static/server.js"></script>
+    <script src="../static/book.js"></script>
+
+</body>
+</html>
