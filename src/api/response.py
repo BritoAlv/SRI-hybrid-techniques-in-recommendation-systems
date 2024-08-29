@@ -7,11 +7,11 @@ class Response:
         }
     
     @staticmethod
-    def features(genres, authors, time_periods):
+    def rating(read_ratio, rating, comment):
         return {
-            'genres': genres,
-            'authors': authors,
-            'time_periods': time_periods
+            'read_ratio': read_ratio,
+            'rating': rating,
+            'comment': comment
         }
 
     @staticmethod

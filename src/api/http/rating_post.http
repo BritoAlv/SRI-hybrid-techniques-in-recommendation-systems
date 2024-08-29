@@ -4,10 +4,10 @@ POST  {{host}}/rating
 Content-Type: application/json
 
 {
-  "user_id": "10000",
-  "book_id": "doe@mail.com",
+  "user_id": "300",
+  "book_id": "2",
   "rating": 4,
   "read_ratio": 0.7,
   "shared": 8,
-  "comment": "Really good book!"
+  "comment": "Impresive!"
 }

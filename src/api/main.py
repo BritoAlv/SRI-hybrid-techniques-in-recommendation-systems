@@ -60,8 +60,22 @@ def login_user():
     response = Response.user(user.id, email)
     return jsonify(response), 200
 
+@app.route('/bookshelf/rating', methods = ['GET'])
+def rating_get():
+    user_id = int(request.args.get('user_id'))
+    book_id = int(request.args.get('book_id'))
+
+    with Session(ENGINE) as session:
+        user_book = session.query(UserBook).filter(UserBook.userId == user_id, UserBook.bookId == book_id).first()
+
+    if user_book == None:
+        return jsonify(Response.error(f"User with id {user_id} has never visited book with id {book_id}"))
+    
+    response = Response.rating(user_book.readRatio, user_book.rating, user_book.comment)
+    return jsonify(response), 200
+
 @app.route('/bookshelf/rating', methods = ['POST'])
-def rating():
+def rating_post():
     data = request.get_json()
 
     user_id = data['user_id']
