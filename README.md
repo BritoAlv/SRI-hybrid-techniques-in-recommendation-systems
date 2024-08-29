@@ -6,6 +6,14 @@
 - David Lezcano Becerra C-312 [@david-dlb](https://github.com/david-dlb)
 - Javier Lima García C-312 [@limaJavier](https://github.com/limaJavier)
 
+## Problema
+
+Hoy en día son numerosas las aplicaciones en las que confluyen usuarios para consumir, comprar, o vender un conjunto de productos, servicios, artículos o propiedades. Dada la infinidad de opciones que poseen los usuarios, se dificulta no solo la búsqueda de lo deseado, sino que incluso estos desconocen o sin incapaces de encontrar aquello que realmente estaban buscando y dejan pasar opciones óptimas ajustadas a sus necesidades, preferencias o recursos.
+
+Este problema, acrecentado por la magnitud de datos de la actualidad, ha sido objetivo de muchas investigaciones y ha dado a luz a los **Sistemas de Recomendaciones**. Estos sistemas, son capaces de acercar aquellos productos (recursos, artículos, etc) que satisfacen las preferencias y necesidades particulares de cada usuario.
+
+Con este proyecto se pretende crear un *Sistema de Recomendación Híbrido*, específicamente, una aplicación en la que los usuarios registrados sean capaces de leer los libros disponibles, y dadas sus particularidades de recibir recomendaciones sobre libros que probablemente le interesen. El sistema es **Híbrido** dado que combina las principales estrategias utilizadas en los sistemas de recomendaciones actuales: *Filtrado Colaborativo* y *Filtrado por Contenido*
+
 ## Requerimientos
 
 ### Hardware
