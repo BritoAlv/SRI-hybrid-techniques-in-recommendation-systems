@@ -54,3 +54,11 @@ En el proyecto fueron utilizados una serie de paquetes de Python, por favor, eje
 ```bash
 bash packages.sh
 ```
+
+## Ejecución del proyecto
+
+Para ejecutar el proyecto, por favor, corra el script de bash **startup.sh**:
+
+```bash
+bash startup.sh
+```
