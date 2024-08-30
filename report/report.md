@@ -75,3 +75,15 @@ Netflix es un buen ejemplo de esto, esta plataforma ofrece recomendaciones compa
 Elaine Rich creó el primer Sistema de Recomendación en 1979, llamado *Grundy*. Buscaba una forma de recomendar a usuarios libros que les pudieran gustar. Su idea fue crear un sistema que realizara preguntas específicas y las clasificara en clases de preferencias o "estereotipos", en dependencia de sus respuestas. Basado en esta pertenencia a un cierto estereotipo, los usuarios recibirían recomendaciones de libros.
 
 Otro de los primeros Sistemas de Recomendación, es el llamado *"librero digital"* (digital bookshelf), el cual fue descrito en un reporte técnico en 1990 por Jussi Karlgren en la Universidad de Columbia, e implementado a escala y continuado mediante reportes técnicos y publicaciones desde 1994 en adelante por Jussi Karlgren, en ese entonces en el SICS, en conjunto con el grupo investigativo dirigido por Pattie Maes del MIT, Will Hill de Bellcore y Paul Resnick, también del MIT. Este trabajo, junto con GroupLens, fue premiado en 2010 por la ACM Software Systems Award.
+
+## 5. Solución
+
+En este proyecto decidimos construir un Sistema de Recomendación Híbrido, capaz de recomendar libros a usuarios (haciendo honor a *Grundy* el primer Sistema de Recomendación) utilizando ambos métodos: *filtrado por contenido* y *filtrado colaborativo*
+
+## 6. Implementación
+
+## 7. Evaluación
+
+## 8. Puntos a mejorar
+
+## 9. Datos utilizados
