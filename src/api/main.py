@@ -104,10 +104,10 @@ def rating_post():
             user_book.comment = comment if comment != "" else None
             session.add(user_book)
         else:
-            shared += user_book.shared
-            read_ratio = user_book.readRatio if read_ratio < user_book.readRatio else read_ratio
-            statement = update(UserBook).where(UserBook.bookId == book_id and UserBook.userId == user_id).values(shared=shared, readRatio=read_ratio, comment=comment, rating=rating)
-            session.execute(statement)
+            user_book.shared += shared
+            user_book.readRatio = user_book.readRatio if read_ratio < user_book.readRatio else read_ratio
+            user_book.rating = rating if 0 <= rating <= 5 else None
+            user_book.comment = comment if comment != "" or comment != None else None
         session.commit()
 
     return "200 OK", 200
@@ -125,7 +125,7 @@ def recommend(user_id):
     user = RecommenderHandler.instantiate_user(user_id)
     recommender = RECOMMENDER_HANDLER.get_recommender()
 
-    response = [book.title for book in recommender.recommend(user, 10)]
+    response = [[book.title, book.id] for book in recommender.recommend(user, 10)]
     RECOMMENDER_HANDLER.dispose()
 
     return jsonify(response), 200

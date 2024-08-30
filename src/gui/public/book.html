@@ -39,12 +39,9 @@
                 </li>
               </ul>
               <div>
-                <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                <ul class="navbar-nav me-auto mb-2 mb-sm-0"> 
                     <li class="nav-item">
-                        <a class="nav-link" href="/survey">Survey</a>
-                    </li>
-                    <li class="nav-item">
-                        <p class="nav-link"   onclick="localStorage.clear()">Logout</p>
+                        <a href="/" class="nav-link"   onclick="localStorage.clear()">Logout</a>
                     </li>
                 </ul>
               </div>
@@ -82,13 +79,19 @@
         </div>
         <div class=" d-flex justify-content-center mt-3">
             <div>
+                <h3>Last comment</h3>
+                <div style="width: 320px;" id="last-comment"></div>
+            </div>
+        </div>
+        <div class=" d-flex justify-content-center mt-3">
+            <div>
                 <div>
                     <h3>Leave a comment</h3>
                     <textarea name="comment" id="comment" rows="10" cols="30"></textarea>
                 </div>
         
                 <div>
-                    <button id="send" class="btn btn-info">Send</button>
+                    <button id="send" class="btn btn-info">Send comment</button>
                 </div>
             </div>
         </div>
