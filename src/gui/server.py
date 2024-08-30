@@ -14,10 +14,6 @@ def register():
 def login():
     return send_file("./public/login.html")
 
-@app.route('/survey', methods = ['GET'])
-def survey():
-    return send_file("./public/survey.html")
-
 @app.route('/recommended', methods = ['GET'])
 def recomended():
     return send_file("./public/recomended.html")
