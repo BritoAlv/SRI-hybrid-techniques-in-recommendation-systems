@@ -125,7 +125,7 @@ def recommend(user_id):
     user = RecommenderHandler.instantiate_user(user_id)
     recommender = RECOMMENDER_HANDLER.get_recommender()
 
-    response = [book.title for book in recommender.recommend(user, 10)]
+    response = [[book.title, book.id] for book in recommender.recommend(user, 10)]
     RECOMMENDER_HANDLER.dispose()
 
     return jsonify(response), 200
