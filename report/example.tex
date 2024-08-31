@@ -77,9 +77,9 @@ Netflix es un buen ejemplo de esto, esta plataforma ofrece recomendaciones compa
 
 \section{Antecedentes}
 
-Elaine Rich creó el primer Sistema de Recomendación en 1979, llamado *Grundy*. Buscaba una forma de recomendar a usuarios libros que les pudieran gustar. Su idea fue crear un sistema que realizara preguntas específicas y las clasificara en clases de preferencias o "estereotipos", en dependencia de sus respuestas. Basado en esta pertenencia a un cierto estereotipo, los usuarios recibirían recomendaciones de libros.
+Elaine Rich creó el primer Sistema de Recomendación en 1979, llamado \textbf{Grundy}. Buscaba una forma de recomendar a usuarios libros que les pudieran gustar. Su idea fue crear un sistema que realizara preguntas específicas y las clasificara en clases de preferencias o \textbf{estereotipos}, en dependencia de sus respuestas. Basado en esta pertenencia a un cierto estereotipo, los usuarios recibirían recomendaciones de libros.
 
-Otro de los primeros Sistemas de Recomendación, es el llamado *"librero digital"* (digital bookshelf), el cual fue descrito en un reporte técnico en 1990 por Jussi Karlgren en la Universidad de Columbia, e implementado a escala y continuado mediante reportes técnicos y publicaciones desde 1994 en adelante por Jussi Karlgren, en ese entonces en el SICS, en conjunto con el grupo investigativo dirigido por Pattie Maes del MIT, Will Hill de Bellcore y Paul Resnick, también del MIT. Este trabajo, junto con GroupLens, fue premiado en 2010 por la ACM Software Systems Award.
+Otro de los primeros Sistemas de Recomendación, es el llamado \textbf{librero digital} (digital bookshelf), el cual fue descrito en un reporte técnico en 1990 por Jussi Karlgren en la Universidad de Columbia, e implementado a escala y continuado mediante reportes técnicos y publicaciones desde 1994 en adelante por Jussi Karlgren, en ese entonces en el SICS, en conjunto con el grupo investigativo dirigido por Pattie Maes del MIT, Will Hill de Bellcore y Paul Resnick, también del MIT. Este trabajo, junto con GroupLens, fue premiado en 2010 por la ACM Software Systems Award.
 
 \section{Descripción del Tema}
 
@@ -93,11 +93,11 @@ Existen dos tipos fundamentales de Sistemas de Recomendación: el \textbf{filtra
 
 \subsection{Filtrado por contenido}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{./images/content-bases_filtering.png}
-    \caption{Your image caption}
-    \label{fig:your-image-label}
+    \caption{Filtrado por contenido}
+    \label{Filtrado por contenido}
 \end{figure}
 
 
@@ -116,11 +116,11 @@ Una vez llevada a cabo la vectorización, puede usarse directamente la `similitu
 
 \subsection{Filtrado colaborativo}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{./images/collaborative_filtering.png}
-    \caption{Your image caption}
-    \label{fig:your-image-label}
+    \caption{Collaborative Filtering}
+    \label{Collaborative Filtering}
 \end{figure}
 
 El \textbf{filtrado colaborativo} posee dos vertientes distintas, y teóricamente equivalentes llamadas:
@@ -138,23 +138,15 @@ Con esta matriz y utilizando, generalmente, la similitud \textbf{centrada del co
 
 Para un producto $i$ y usuario $x$, donde $N$ es el conjunto de los $k$ usuarios más similares a $x$ que han consumido el producto $i$, la predicción es la siguiente:
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{./images/user_to_user.png}
-    \caption{Your image caption}
-    \label{fig:your-image-label}
-\end{figure}
+$$r_{xi} = \frac{\sum_{y \in \mathbb{N}} s_{xy} r_{yi}}{\sum_{y \in \mathbb{N}} s_{xy}}$$
+
 
 \textbf{Producto-Producto}
 
 Para un producto $i$ y un usuario $x$, donde $N$ es el conjunto de los $k$ productos más similares a $i$ que han sido consumidos por $x$, la predicción es la siguiente:
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{./images/item_to_item.png}
-    \caption{Your image caption}
-    \label{fig:your-image-label}
-\end{figure}
+$$r_{xi} = \frac{\sum_{j \in \mathbb{N} (i; x)} s_{ij} r_{xj}}{\sum_{j \in \mathbb{N} (i;x)} s_{ij}}$$
+
 
 Para ambos casos, $s$ es la similitud (en el primero entre usuarios y en el segundo entre productos) y $r$ cuánto ha estimado al producto.
 
@@ -168,12 +160,12 @@ La información presente en esta base de datos fue obtenida de dos formas, utili
 
 \begin{enumerate}
     \item Para los metadatos sobre los libros (tabla \textbf{Books}) fue utilizada la API Gutendex (https://gutendex.com/), que provee los metadatos de los libros almacenados por el Proyecto Gutenberg (https://www.gutenberg.org/)
-    \item Para los usuarios (tabla *Users*) y las interacciones usuario-libro (tabla *UserBooks*), se simuló el comportamiento de estos con respecto a un conjunto de libros.
+    \item Para los usuarios (tabla \textbf{Users}) y las interacciones usuario-libro (tabla \textbf{UserBooks}), se simuló el comportamiento de estos con respecto a un conjunto de libros.
 \end{enumerate}
 
 \subsection{Extracción de los libros}
 
-La extracción de los metadatos asociados a libros fue bastante directa a través de [**Gutendex**](https://gutendex.com/). La única transformación realizada se produjo durante la extracción de los géneros; y es que, dada la multitud de géneros existentes, predefinimos un conjunto de estos (tabla *Genres*), y según la similitud de estos con la sección `subject` de los datos de la API, añadimos los géneros a cada libro.
+La extracción de los metadatos asociados a libros fue bastante directa a través de [**Gutendex**](https://gutendex.com/). La única transformación realizada se produjo durante la extracción de los géneros; y es que, dada la multitud de géneros existentes, predefinimos un conjunto de estos (tabla \textbf{Genres}), y según la similitud de estos con la sección `subject` de los datos de la API, añadimos los géneros a cada libro.
 
 \subsection{Generación de usuarios e interacciones}
 
@@ -284,7 +276,7 @@ $$A[k][l] = \frac{ \sum_{u = 1}^m (R_{u,k} - R_k)*(R_{u,l} - R_l) }{ \sqrt{\sum_
 
 Donde $k, l$ son dos libros en nuestra base de datos, $m$ es la cantidad de usuarios que interactuaron con ambos libros $k, l$. $R_k,R_l$ son los promedios de los rating recibidos por los libros $k, l$ y $R_{u,k}, R_{u,l}$ son los ratings de los libros $k, l$ dados por el usuario $u$. 
 
-Por cada usuario que interactuó con ambos libros $k,l$ se obtiene un par $(x1, y1)$, en nuestro caso representan el rating obtenido, el coeficiente de Pearson mide la correlación linear entre dos samples $(x_1, x2, ..., x_l)$, $(y1, y2, ..., y_l)$, este coeficiente es un número entre $-1$ y $1$, $1$ indicando que los puntos están alineados con pendiente positiva, $-1$, con pendiente negativa, $0$ es que no existe relación linear entre ellos, si están alineados con pendiente negativa es interpretado como que son contrarios, o no concuerdan.
+Por cada usuario que interactuó con ambos libros $k,l$ se obtiene un par $(x_1, y_1)$, en nuestro caso representan el rating obtenido, el coeficiente de Pearson mide la correlación linear entre dos samples $(x_1, x_2, ..., x_l)$, $(y_1, y_2, ..., y_l)$, este coeficiente es un número entre $-1$ y $1$, $1$ indicando que los puntos están alineados con pendiente positiva, $-1$, con pendiente negativa, $0$ es que no existe relación linear entre ellos, si están alineados con pendiente negativa es interpretado como que son contrarios, o no concuerdan.
 
 \textbf{Matriz $2$:}
 
@@ -314,7 +306,7 @@ Una vez calculadas las dos matrices $A_1, A_2$ entonces:
 
 $$M = c * A_1 + (1-c) * A_2$$
 
-La cantidad de clusters, y el coeficiente en la combinación linear son parámetros que deben estimarse de forma que minimizen alguna métrica como *Mean Absolute Error*.
+La cantidad de clusters, y el coeficiente en la combinación linear son parámetros que deben estimarse de forma que minimizen alguna métrica como \textbf{Mean Absolute Error}.
 
 \subsection{Complejidad}
 
@@ -323,7 +315,7 @@ La complejidad de todos estos pasos es al menos cuadrática :
 \begin{enumerate}
     \item el algoritmo de $K-Means$ divide a los libros en grupos, pero dentro de un  grupo es hallada la similitud entre cada par de libros, esto es $O(it * l^2)$ donde $it$ es la cantidad de iteraciones que hace el algoritmo, y $l$ es la cantidad de libros.
 
-    \item el algoritmo para calcular la *item - rating matrix* usa las interacciones entre libros y usuarios en el peor caso tiene que analizar $O(l * u)$ donde $l$ es la cantidad de libros, y $u$ es la cantidad de usuarios.
+    \item el algoritmo para calcular la \textbf{item - rating matrix} usa las interacciones entre libros y usuarios en el peor caso tiene que analizar $O(l * u)$ donde $l$ es la cantidad de libros, y $u$ es la cantidad de usuarios.
     
     \item construir la segunda matrix de similitud itera por cada par de libros, y después por los clusters, por tanto sería $O( k * l^2)$, donde $k$ es la cantidad de clusters.
 \end{enumerate}
@@ -351,18 +343,20 @@ Ejecutamos el algoritmo de recomendar con algunos usuario al azar de nuestra bas
     \item Max.   : $2.2588$ 
 \end{enumerate}
 
+Como se puede observar una recomendación no toma más de $3$ segundos, en promedio no es más de un segundo y medio.
+
 \subsection{Precisión}
 
-Para evaluar la precisión de el sistema, generamos $100$ usuarios nuevos, que interactúan con los libros actuales en nuestro sistema, comparamos sus rating predecidos con los actuales, usando *Mean Absolute Error*, mostramos varios plots de los resultados:
+Para evaluar la precisión de el sistema, generamos $100$ usuarios nuevos, que interactúan con los libros actuales en nuestro sistema, comparamos sus rating predecidos con los actuales, usando \textbf{Mean Absolute Error}, mostramos varios plots de los resultados:
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includesvg[width=\textwidth]{./images/plot.svg}
     \caption{Resultados de la evaluación de precisión}
     \label{fig:precision-plot}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includesvg[width=\textwidth]{./images/plot1.svg}
     \caption{Resultados de la evaluación de precisión}
@@ -376,7 +370,7 @@ En promedio el $Mean Absolute Error$ obtenido fue de $0.63$.
 Consideramos los siguientes puntos:
 
 \begin{enumerate}
-    \item La precisión de la recomendación, es aceptable, pero pudiera ser mejorada, por ejemplo implementando alguna forma de relación entre usuario a usuario análogo a lo de libro a libro.
+    \item La precisión de la recomendación, es aceptable, pero pudiera ser mejorada, por ejemplo implementando alguna forma de relación entre usuario a usuario análogo a el enfoque de libro a libro.
     \item Al ser la complejidad cuadrática no es posible permitir $10000$ libros en la base de datos por ejemplo.
 \end{enumerate}
 
