@@ -3,7 +3,7 @@
 Nuestra aplicación es un sistema de recomendador de libros a usuarios, basado en información obtenida de estos usuarios como:
  
     - 
-    -
+    - 
     -
 
 Usamos sobre los libros información como:
@@ -112,6 +112,14 @@ Realizamos dos tests:
 ##### Velocidad : 
 
 Ejecutamos el algoritmo de recomendar con algunos usuario al azar de nuestra base de datos, mostramos un resumen estadístico de los resultados.
+
+Execution.Time  
+    - Min.   : 0.5664  
+    - 1st Qu.: 0.9351  
+    - Median : 1.2636  
+    - Mean   : 1.2310  
+    - 3rd Qu.: 1.4362  
+    - Max.   : 2.2588 
 
 ##### Precisión :
 

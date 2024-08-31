@@ -1,9 +1,6 @@
-from itemchm.entities_repr import User
 from itemchm.hybrid_recommender import HybridRecommender
 
 import pickle as pk
-import random as rd
-import time
 
 with open("system.pk", "rb") as s:
     system = pk.load(s)
