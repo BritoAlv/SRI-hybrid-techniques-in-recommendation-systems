@@ -87,3 +87,77 @@ En este proyecto decidimos construir un Sistema de Recomendación Híbrido, capa
 ## 8. Puntos a mejorar
 
 ## 9. Datos utilizados
+
+La información utilizada para el proyecto se encuentra almacenada en una base de datos (específicamente utilizamos SQLite como SGBD), que contiene como tablas principales: *Books*, *Users* y *UserBooks* (presenta los datos obtenidos de una interacción usuario-libro, como: rating, comentarios, cantidad de shares y ratio de lectura)
+
+La información presente en esta base de datos fue obtenida de dos formas (utilizando el script `data_collector.py`):
+
+- Para los metadatos sobre los libros (tabla *Books*) fue utilizada la API [**Gutendex**](https://gutendex.com/), que provee los metadatos de los libros almacenados por el [**Proyecto Gutenberg**](https://www.gutenberg.org/)
+- Para los usuarios (tabla *Users*) y las interacciones usuario-libro (tabla *UserBooks*), se simuló el comportamiento de estos con respecto a un conjunto de libros.
+
+### 9.1 Extracción de los libros
+
+La extracción de los metadatos asociados a libros fue bastante directa a través de [**Gutendex**](https://gutendex.com/). La única transformación realizada se produjo durante la extracción de los géneros; y es que, dada la multitud de géneros existentes, predefinimos un conjunto de estos (tabla *Genres*), y según la similitud de estos con la sección `subject` de los datos de la API, añadimos los géneros a cada libro.
+
+### 9.2 Generación de usuarios e interacciones
+
+Para generar usuarios e interacciones con libros lo más cercano a la realidad, se decidió utilizar la siguiente estrategia:
+
+Dado los *k* libros más populares y los *p* autores más populares (la API brinda la información de cuántas veces un libro ha sido descargado), se generó un usuario que va a presentar tres características distintas, generadas aleatoriamente:
+
+- Época preferida (antigua, moderna o contemporánea)
+- Autores preferidos (de los autores más populares)
+- Géneros preferidos
+
+Con este perfil de usuario se procedió a escoger de 1 a 300 libros (de los más populares) con los que el usuario potencialmente interactuará. Por cada libro validamos lo siguiente:
+
+- Si el libro pertenece a un género que le gusta al usuario, o su autor es uno de los preferidos del usuario, o pertenece a la época favorita del usuario, entonces tendrá una interacción "positiva" (más adelante se explicará en qué consiste)
+- Si no se cumple ninguna condición anterior entonces tendrá una interacción "negativa"
+
+**Interacciones**:
+
+Una *interacción positiva* colocará de manera aleatoria valores considerados positivos para la interacción, de manera *análoga* se produce para una *interacción negativa*. A forma de ejemplo, mostramos nuestra implementación:
+
+```py
+def _positive_user_book(self, user_id : int, book_id : int):
+        shared = random.randint(3, 20)
+        read_ratio = random.randint(50, 100) / 100
+        rating = random.randint(3, 5)
+        comment = random.choice([
+            'It is a really good book. I would read it again',
+            'Just love it',
+            'I would recommend this book to anyone. It is a hidden diamond'
+        ])
+
+        user_book = UserBook(user_id, book_id)
+        user_book.shared = shared
+        user_book.readRatio = read_ratio
+        user_book.rating = rating
+        user_book.comment = comment
+        return user_book
+
+def _negative_user_book(self, user_id : int, book_id : int):
+        shared = random.randint(0, 2)
+        read_ratio = random.randint(0, 50) / 100
+        rating = random.randint(0, 2)
+        comment = random.choice([
+            "Simply don't like the book",
+            "It's awful",
+            "Terrible book! (in the bad sense)"
+        ])
+
+        user_book = UserBook(user_id, book_id)
+        user_book.shared = shared
+        user_book.readRatio = read_ratio
+        user_book.rating = rating
+        user_book.comment = comment
+        return user_book
+```
+
+## 10. Bibliografías
+
+- Li, Qing & Kim, Byeong. (2003). An approach for combining content-based and collaborative filters. 17-24. 10.3115/1118935.1118938. 
+- P. Resnick, N. Iacovou, M. Suchak, P. Bergstrom, and J. Riedl, "GroupLens: an open architecture for collaborative filtering of netnews," presented at the Proceedings of the 1994 ACM conference on Computer supported cooperative work - CSCW '94, Chapel Hill, North Carolina, USA, 1994.
+-J. Leskovec, A. Rajaraman, and J. Ullman, Mining of Massive Datasets, 2nd ed. Cambridge, U.K.: Cambridge University Press, 2014.
+- Artificial Intelligence - All in One, "Mining Massive Datasets - Stanford University", YouTube, [Playlist], Accessed: Aug. 31, 2024. [Online]. Available: https://youtube.com/playlist?list=PLLssT5z_DsK9JDLcT8T62VtzwyW9LNepV&feature=shared.
+- Karlgren, Jussi (October 2017). "A digital bookshelf: original work on recommender systems". Retrieved October 27, 2017.
