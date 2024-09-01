@@ -192,21 +192,21 @@ Una \textbf{interacción positiva} colocará de manera aleatoria valores conside
 
 \begin{minted}{python3}
     def _positive_user_book(self, user_id : int, book_id : int):
-    shared = random.randint(3, 20)
-    read_ratio = random.randint(50, 100) / 100
-    rating = random.randint(3, 5)
-    comment = random.choice([
-        'It is a really good book. I would read it again',
-        'Just love it',
-        'I would recommend this book to anyone. It is a hidden diamond'
-    ])
+        shared = random.randint(3, 20)
+        read_ratio = random.randint(50, 100) / 100
+        rating = random.randint(3, 5)
+        comment = random.choice([
+            'It is a really good book. I would read it again',
+            'Just love it',
+            'I would recommend this book to anyone. It is a hidden diamond'
+        ])
 
-    user_book = UserBook(user_id, book_id)
-    user_book.shared = shared
-    user_book.readRatio = read_ratio
-    user_book.rating = rating
-    user_book.comment = comment
-    return user_book
+        user_book = UserBook(user_id, book_id)
+        user_book.shared = shared
+        user_book.readRatio = read_ratio
+        user_book.rating = rating
+        user_book.comment = comment
+        return user_book
 
 def _negative_user_book(self, user_id : int, book_id : int):
     shared = random.randint(0, 2)
@@ -226,6 +226,25 @@ def _negative_user_book(self, user_id : int, book_id : int):
     return user_book    
 \end{minted}
 
+\subsection{Análisis Estadístico }
+
+Fue realizado un análisis estadístico sobre los datos generados para comprobar el comportamiento de anomalías que pudieran afectar la validez de nuestro sistema de recomendación. Para esto se tomó como referencia la cantidad de cada uno de los ratings (overall en este caso) por usuario y por libros.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./images/general_stats.png}
+    \caption{Collaborative Filtering}
+    \label{Collaborative Filtering}
+\end{figure}
+
+Como podemos apreciar por una descripción global de los datos seleccionados, existe una tendencia hacia los ratings negativos, así como una nula y casi nula existencia de ratings de 3 y 6, respectivamente. Dado que es poco común que esto se produzca con datos reales, fue realizado un análisis más profundo utilizando el \textbf{z-score}. Los resultados obtenidos fueron los siguientes:
+
+\begin{enumerate}
+    \item $3\%$ de los datos asociados a usuarios presentan anomalías
+    \item $0.03\%$ de los datos asociados a libros presentan anomalías
+\end{enumerate}
+
+Dada el bajo porcentaje de anomalías encontradas y el contexto del proyecto (no se trabaja con información financiera o médica de alto riesgo, por ejemplo), se decidió que los datos son viables para la prueba del sistema.
 
 \section{Implementación}
 
