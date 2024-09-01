@@ -97,7 +97,7 @@ La información presente en esta base de datos fue obtenida de dos formas (utili
 
 ### 9.1 Extracción de los libros
 
-La extracción de los metadatos asociados a libros fue bastante directa a través de [**Gutendex**](https://gutendex.com/). La única transformación realizada se produjo durante la extracción de los géneros; y es que, dada la multitud de géneros existentes, predefinimos un conjunto de estos (tabla *Genres*), y según la similitud de estos con la sección `subject` de los datos de la API, añadimos los géneros a cada libro.
+La extracción de los metadatos asociados a libros fue bastante directa a través de [**Gutendex**](https://gutendex.com/). La única transformación realizada se produjo durante la extracción de los géneros; y es que, dada la multitud de géneros existentes, se predefinió un conjunto de estos (tabla *Genres*), y según la similitud de estos con la sección `subject` de los datos de la API, fueron añadidos los géneros a cada libro.
 
 ### 9.2 Generación de usuarios e interacciones
 
@@ -153,6 +153,19 @@ def _negative_user_book(self, user_id : int, book_id : int):
         user_book.comment = comment
         return user_book
 ```
+
+### 9.3 Análisis estadístico
+
+Fue realizado un análisis estadístico sobre los datos generados para comprobar el comportamiento de anomalías que pudieran afectar la validez de nuestro sistema de recomendación. Para esto se tomó como referencia la cantidad de cada uno de los ratings (overall en este caso) por usuario y por libros.
+
+![alt text](./images/general_stats.png)
+
+Como podemos apreciar por una descripción global de los datos seleccionados, existe una tendencia hacia los ratings negativos, así como una nula y casi nula existencia de ratings de 3 y 6, respectivamente. Dado que es poco común que esto se produzca con datos reales, fue realizado un análisis más profundo utilizando el **z-score**. Los resultados obtenidos fueron los siguientes:
+
+- *3%* de los datos asociados a usuarios presentan anomalías
+- *0.03%* de los datos asociados a libros presentan anomalías
+
+Dada el bajo porcentaje de anomalías encontradas y el contexto del proyecto (no se trabaja con información financiera o médica de alto riesgo, por ejemplo), se decidió que los datos son viables para la prueba del sistema.
 
 ## 10. Bibliografías
 
