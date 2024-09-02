@@ -1,3 +1,4 @@
+import os
 import pickle
 from threading import Lock, Thread
 import time
@@ -14,10 +15,16 @@ from itemchm.entities_repr import User, Book
 class RecommenderHandler:
     def __init__(self) -> None:
         self._recommender : HybridRecommender = None
-
-        with open('./data/system.pkl', 'rb') as file:
-            self._recommender = pickle.load(file)
-
+        
+        if not os.path.exists('./data/system.pkl'):
+            self._update_recommender()
+            with open("./data/system.pkl", "wb") as file:
+                pickle.dump(self._recommender, file)
+        
+        else:
+            with open('./data/system.pkl', 'rb') as file:
+                self._recommender = pickle.load(file)
+            
         self._lock = Lock()
         self._acquired = False
 
