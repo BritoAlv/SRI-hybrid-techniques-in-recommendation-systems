@@ -20,6 +20,8 @@ class RecommenderHandler:
         
         if not os.path.exists('./data/system.pkl'):
             self._update_recommender()
+            if not os.path.exists("./data/"):
+                os.mkdir("./data")
             with open("./data/system.pkl", "wb") as file:
                 pickle.dump(self._recommender, file)
         
