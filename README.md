@@ -57,8 +57,10 @@ pip install -r requirements.txt
 
 ## Ejecución del proyecto
 
-Para ejecutar el proyecto, por favor, corra el script de bash **startup.sh**:
+Para ejecutar el proyecto, corra el script de bash **startup.sh**:
 
 ```bash
 bash startup.sh
 ```
+
+Por defecto tenemos en el repositorio dos .bd para correr el proyecto, por defecto se usa la llamada "bookshelf.db", pero realizar el pre-computado para iniciar el sistema recomendador por primera vez demora más de 10 minutos, en caso de querer correr el proyecto más rápido proporcionamos una base de datos pequeña, usar "mini_bookshelf.db" reemplazando a el archivo "bookshelf.db" en este caso.
