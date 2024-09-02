@@ -15,6 +15,8 @@ from itemchm.entities_repr import User, Book
 class RecommenderHandler:
     def __init__(self) -> None:
         self._recommender : HybridRecommender = None
+        self._lock = Lock()
+        self._acquired = False
         
         if not os.path.exists('./data/system.pkl'):
             self._update_recommender()
@@ -25,8 +27,6 @@ class RecommenderHandler:
             with open('./data/system.pkl', 'rb') as file:
                 self._recommender = pickle.load(file)
             
-        self._lock = Lock()
-        self._acquired = False
 
         Thread(target=self._update).start()
 
