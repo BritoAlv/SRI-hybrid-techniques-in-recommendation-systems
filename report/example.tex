@@ -59,13 +59,15 @@
 
 \section{Repositorio}
 
-[SRI-hybrid-techniques-in-recommendation-systems](https://github.com/BritoAlv/SRI-hybrid-techniques-in-recommendation-systems)
+% add an hyperlink
+\href{https://github.com/BritoAlv/SRI-hybrid-techniques-in-recommendation-systems}{SRI-hybrid-techniques-in-recommendation-systems}
+
 
 \section{Autores}
 \begin{enumerate}
-    \item David Lezcano Becerra C-312 [@david-dlb](https://github.com/david-dlb)
-    \item Javier Lima García C-312 [@limaJavier](https://github.com/limaJavier)
-    \item Álvaro Luis González Brito C-312 [@BritoAlv](https://github.com/BritoAlv)
+    \item David Lezcano Becerra C-312 \href{https://github.com/david-dlb}{@david-dlb}
+    \item Javier Lima García C-312 \href{@limaJavier}{https://github.com/limaJavier}
+    \item Álvaro Luis González Brito C-312 \href{@BritoAlv}{https://github.com/BritoAlv}
 \end{enumerate}
 
 
@@ -112,7 +114,7 @@ Numerosas estrategias han sido diseñadas para responder a esta pregunta y dentr
     \item Los vectores asociados a usuarios pueden obtenerse por numerosas vías, desde un simple promedio de los vectores asociados a productos consumidos, a un promedio ponderado o incluso utilizando técnicas basadas en Machine Learning.
 \end{enumerate}
 
-Una vez llevada a cabo la vectorización, puede usarse directamente la `similitud del coseno` para encontrar aquellos perfiles de productos más similares al perfil del usuario seleccionado.
+Una vez llevada a cabo la vectorización, puede usarse directamente la \textbf{similitud del coseno} para encontrar aquellos perfiles de productos más similares al perfil del usuario seleccionado.
 
 \subsection{Filtrado colaborativo}
 
@@ -159,13 +161,13 @@ La información utilizada para el proyecto se encuentra almacenada en una base d
 La información presente en esta base de datos fue obtenida de dos formas, utilizando el script "data collector":
 
 \begin{enumerate}
-    \item Para los metadatos sobre los libros (tabla \textbf{Books}) fue utilizada la API Gutendex (https://gutendex.com/), que provee los metadatos de los libros almacenados por el Proyecto Gutenberg (https://www.gutenberg.org/)
+    \item Para los metadatos sobre los libros (tabla \textbf{Books}) fue utilizada la \href{https://gutendex.com/}{API Gutendex}, que provee los metadatos de los libros almacenados por el Proyecto Gutenberg.
     \item Para los usuarios (tabla \textbf{Users}) y las interacciones usuario-libro (tabla \textbf{UserBooks}), se simuló el comportamiento de estos con respecto a un conjunto de libros.
 \end{enumerate}
 
 \subsection{Extracción de los libros}
 
-La extracción de los metadatos asociados a libros fue bastante directa a través de [**Gutendex**](https://gutendex.com/). La única transformación realizada se produjo durante la extracción de los géneros; y es que, dada la multitud de géneros existentes, predefinimos un conjunto de estos (tabla \textbf{Genres}), y según la similitud de estos con la sección `subject` de los datos de la API, añadimos los géneros a cada libro.
+La extracción de los metadatos asociados a libros fue bastante directa a través de  \href{https://gutendex.com/}{Gutendex}. La única transformación realizada se produjo durante la extracción de los géneros; y es que, dada la multitud de géneros existentes, predefinimos un conjunto de estos (tabla \textbf{Genres}), y según la similitud de estos con la sección `subject` de los datos de la API, añadimos los géneros a cada libro.
 
 \subsection{Generación de usuarios e interacciones}
 
@@ -228,7 +230,7 @@ def _negative_user_book(self, user_id : int, book_id : int):
 
 \subsection{Análisis Estadístico }
 
-Fue realizado un análisis estadístico sobre los datos generados para comprobar el comportamiento de anomalías que pudieran afectar la validez de nuestro sistema de recomendación. Para esto se tomó como referencia la cantidad de cada uno de los ratings (overall en este caso) por usuario y por libros.
+Fue realizado un análisis estadístico sobre los datos generados para comprobar el comportamiento de anomalías que pudieran afectar la validez de nuestro sistema de recomendación. Para esto se tomó como referencia la cantidad de cada uno de los ratings ("overall" en este caso) por usuario y por libros.
 
 \begin{figure}[H]
     \centering
@@ -271,8 +273,8 @@ Donde $n$ representa la cantidad de libros con los que el usuario $u$ ha interac
 Los dos sumandos de la fórmula anterior son interpretados como:
 
 \begin{enumerate}
-    \item Notar que si el usuario no ha interactuado con ningún libro el sistema predeciría solamente usando los promedios de los ratings de los libros existentes ( el primer sumando ), lo que permite hacer recomendaciones a los usuarios sin tener conocimiento de ellos.
-    \item Con respecto a la segunda fórmula, notar que el segundo factor de cada sumando representa una proporción con respecto a el denominador, o sea, representa un promedio ponderado. Si estos pesos fueran todos iguales a 1, o sea, fuera un promedio, la fórmula representa la desviación de los ratings obtenidos de el usuario con respecto a la media de ratings obtenidos de usuarios a ese libro, la idea de la ponderación es que los libros más similares ,según nuestra matriz de similitud, a el libro $b$ que se intenta predecir obtengan más peso con respecto a los menos similares. 
+    \item Notar que si el usuario no ha interactuado con ningún libro el sistema usaría solamente  los promedios de los ratings de los libros existentes ( el primer sumando ), lo que permite hacer recomendaciones a los usuarios sin tener conocimiento de ellos.
+    \item Con respecto a la segunda fórmula, notar que el segundo factor de cada sumando representa una proporción con respecto a el denominador, o sea, representa un promedio ponderado. Si estos pesos fueran todos iguales a 1, fuera un promedio. En general la fórmula representa la desviación de los ratings obtenidos de el usuario con respecto a la media de ratings obtenidos de usuarios a ese libro, la idea de la ponderación es que los libros más similares a el libro $b$ que se intenta predecir obtengan más peso con respecto a los menos similares. 
 \end{enumerate}
 
 La complejidad de realizar este método sería $O(n)$, pero este es calculado por cada libro que hay en nuestra base de datos, asumiendo que hayan $m$ libros esta sería $O(n * m)$, por esta razón tenemos alrededor de $2000$ libros en nuestra base de datos, cifra que permite realizar la recomendación lo suficientemente rápido.
@@ -325,7 +327,7 @@ Una vez calculadas las dos matrices $A_1, A_2$ entonces:
 
 $$M = c * A_1 + (1-c) * A_2$$
 
-La cantidad de clusters, y el coeficiente en la combinación linear son parámetros que deben estimarse de forma que minimizen alguna métrica como \textbf{Mean Absolute Error}.
+La cantidad de clusters, y el coeficiente en la combinación linear son parámetros que deben estimarse de forma que minimicen alguna métrica como \textbf{Mean Absolute Error}.
 
 \subsection{Complejidad}
 
@@ -339,14 +341,14 @@ La complejidad de todos estos pasos es al menos cuadrática :
     \item construir la segunda matrix de similitud itera por cada par de libros, y después por los clusters, por tanto sería $O( k * l^2)$, donde $k$ es la cantidad de clusters.
 \end{enumerate}
      
-Por las razones anteriores este cálculo es cacheado, y precomputado en segundo plano en caso de que se necesite actualizar la información del sistema recomendador.
+Por las razones anteriores este cálculo es cacheado, y pre-computado en segundo plano en caso de que se necesite actualizar la información del sistema recomendador.
 
 \subsection{Como se calcula la similitud entre los libros}
 Se calculan dos proporciones y se multiplican:
 
 \begin{enumerate}
     \item la razón entre la intersección e unión de sus géneros.
-    \item la razón ponderada ( coincidencia en Autor debe constribuir mucho más que coincidencia en Año) de en cuantos atributos coinciden, Año, Lenguaje, etc
+    \item la razón ponderada ( coincidencia en Autor debe contribuir mucho más que coincidencia en Año) de en cuantos atributos coinciden, Año, Lenguaje, etc
 \end{enumerate}
 
 \section{Evaluación}
